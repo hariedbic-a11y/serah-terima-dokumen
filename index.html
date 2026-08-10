@@ -34,7 +34,7 @@
 
   function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function loadStorage(key, def){ try { const val = localStorage.getItem('st_' + key); return val ? JSON.parse(val) : def; } catch(e){ return def; } }
-  function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){} }
+  function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){ alert('Penyimpanan browser penuh!'); } }
 
   let state = {
     user: null,
@@ -113,7 +113,7 @@
         refreshDocs();
         render();
       } else {
-        alert('Username atau Password salah! Jika lupa sandi, hubungi admin utama (Hari Santoso).');
+        alert('Username atau Password salah!');
       }
     };
 
@@ -148,7 +148,7 @@
       if (!u || !p) { alert('Username dan Password wajib diisi!'); return; }
 
       if (state.users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
-        alert('Username sudah terdaftar! Gunakan nama lain.');
+        alert('Username sudah terdaftar!');
         return;
       }
 
@@ -191,7 +191,7 @@
                   <div style="font-size:13px;color:#6b7280;">Dibuat oleh: ${esc(d.createdBy)} | Status: <strong>${esc(d.status)}</strong></div>
                 </div>
                 <div>
-                  ${d.fileName ? '<span style="background:#e0f2fe;color:#0369a1;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Ada File</span>' : '<span style="background:#fef3c7;color:#b45309;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Belum ada file</span>'}
+                  ${d.fileName ? '<span style="background:#e0f2fe;color:#0369a1;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Lampiran: '+esc(d.fileName)+'</span>' : '<span style="background:#fef3c7;color:#b45309;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Tanpa File</span>'}
                 </div>
               </div>
             </div>
@@ -278,7 +278,7 @@
           <label class="st-label">Judul Dokumen</label>
           <input class="st-input" id="doc-title-input" placeholder="Contoh: Berita Acara Serah Terima" />
           
-          <label class="st-label">Unggah File (Word, Excel, PDF, Foto, dll)</label>
+          <label class="st-label">Lampiran File (Opsional)</label>
           <input type="file" id="doc-file-input" class="st-input" style="padding:6px;" />
           
           <button class="st-btn st-btn-primary" id="save-doc-btn" style="width:100%;margin-top:8px;">Simpan Dokumen</button>
@@ -293,48 +293,26 @@
       if (!title) { alert('Judul dokumen wajib diisi!'); return; }
       
       const id = 'doc_' + Date.now();
+      const fileName = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : null;
       
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const newDoc = {
-            id,
-            title,
-            status: 'Draft',
-            createdAt: new Date().toISOString(),
-            createdBy: state.user.username,
-            fileName: file.name,
-            fileData: e.target.result,
-            fileType: file.type
-          };
-          saveAndFinish(id, newDoc);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const newDoc = {
-          id,
-          title,
-          status: 'Draft',
-          createdAt: new Date().toISOString(),
-          createdBy: state.user.username,
-          fileName: null,
-          fileData: null,
-          fileType: null
-        };
-        saveAndFinish(id, newDoc);
-      }
-    });
-  }
+      const newDoc = {
+        id,
+        title,
+        status: 'Draft',
+        createdAt: new Date().toISOString(),
+        createdBy: state.user.username,
+        fileName: fileName
+      };
 
-  function saveAndFinish(id, docObj){
-    saveStorage(id, docObj);
-    const docIds = loadStorage('doc-ids', []);
-    docIds.push(id);
-    saveStorage('doc-ids', docIds);
-    refreshDocs();
-    state.screen = 'dashboard';
-    render();
+      saveStorage(id, newDoc);
+      const docIds = loadStorage('doc-ids', []);
+      docIds.push(id);
+      saveStorage('doc-ids', docIds);
+
+      refreshDocs();
+      state.screen = 'dashboard';
+      render();
+    });
   }
 
   function renderDetail(){
@@ -349,15 +327,12 @@
           <p style="font-size:13px;color:#6b7280;">Dibuat oleh: <strong>${esc(doc.createdBy)}</strong> | Tanggal: ${new Date(doc.createdAt).toLocaleString()}</p>
           <hr style="border:0;border-top:1px solid #e5e7eb;margin:16px 0;">
           
-          <h3 style="font-size:15px;margin-bottom:8px;">File Lampiran:</h3>
+          <h3 style="font-size:15px;margin-bottom:8px;">Informasi Lampiran:</h3>
           ${doc.fileName ? `
-            <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-              <div>
-                <strong>${esc(doc.fileName)}</strong>
-              </div>
-              <a href="${doc.fileData}" download="${doc.fileName}" class="st-btn st-btn-primary" style="text-decoration:none;font-size:13px;padding:6px 12px;">Unduh File</a>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:8px;margin-bottom:16px;">
+              <strong>Nama File:</strong> ${esc(doc.fileName)}
             </div>
-          ` : '<p style="color:#6b7280;font-size:14px;margin-bottom:16px;">Belum ada file yang diunggah pada dokumen ini.</p>'}
+          ` : '<p style="color:#6b7280;font-size:14px;margin-bottom:16px;">Tidak ada lampiran file.</p>'}
 
           <div style="display:flex;gap:8px;margin-top:20px;">
             <button class="st-btn st-btn-danger" id="delete-doc-btn" style="margin-left:auto;">Hapus Dokumen</button>
