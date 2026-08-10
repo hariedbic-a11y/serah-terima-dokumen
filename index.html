@@ -6,163 +6,173 @@
     color: #1f2430;
     max-width: 760px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 16px;
   }
   #app-root button { font-family: inherit; cursor: pointer; }
   #app-root input, #app-root select, #app-root textarea { font-family: inherit; font-size: 14px; }
   .st-btn {
     border: 1px solid #d7dae0; background: #fff; border-radius: 8px;
-    padding: 8px 14px; font-size: 14px; font-weight: 500; color: #1f2430; transition: background .12s;
+    padding: 9px 16px; font-size: 14px; font-weight: 500; color: #1f2430; transition: background .12s;
   }
   .st-btn:hover { background: #f4f5f7; }
-  .st-btn:active { transform: scale(0.98); }
   .st-btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
   .st-btn-primary:hover { background: #1d4ed8; }
-  .st-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
-  .st-input { width: 100%; border: 1px solid #d7dae0; border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+  .st-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .st-input { width: 100%; border: 1px solid #d7dae0; border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
   .st-input:focus { outline: 2px solid #2563eb33; border-color: #2563eb; }
-  .st-label { font-size: 13px; font-weight: 600; color: #4b5262; margin-bottom: 4px; display: block; }
+  .st-label { font-size: 13px; font-weight: 600; color: #4b5262; margin-bottom: 6px; display: block; }
 </style>
 <script>
 (function(){
   const ROOT = document.getElementById('app-root');
-  const ADMIN_NAME = 'Hari Santoso';
-
-  let state = {
-    myIdentity: null, users: [], docs: [], activeDocId: null, screen: 'identity'
-  };
 
   function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function loadStorage(key, def){ try { const val = localStorage.getItem('st_' + key); return val ? JSON.parse(val) : def; } catch(e){ return def; } }
+  function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){} }
 
-  function loadStorage(key, def){
-    try { const val = localStorage.getItem('st_' + key); return val ? JSON.parse(val) : def; } catch(e){ return def; }
-  }
-  function saveStorage(key, val){
-    try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){}
-  }
+  let state = {
+    user: null, // {username, role}
+    users: [],  // [{username, password, role}]
+    docs: [],
+    screen: 'login'
+  };
 
   function init(){
-    state.myIdentity = localStorage.getItem('st_my-identity') || null;
-    state.users = loadStorage('users', [ADMIN_NAME]);
+    // Akun default admin jika belum ada database user
+    let users = loadStorage('users', []);
+    if (!users.some(u => u.username === 'admin')) {
+      users.push({ username: 'admin', password: '123', role: 'Administrator' });
+      saveStorage('users', users);
+    }
+    state.users = users;
+
+    // Cek apakah sudah login sebelumnya
+    const savedUser = loadStorage('logged_user', null);
+    if (savedUser) {
+      state.user = savedUser;
+      state.screen = 'dashboard';
+    } else {
+      state.screen = 'login';
+    }
+
     const docIds = loadStorage('doc-ids', []);
     state.docs = docIds.map(id => loadStorage('doc_' + id, null)).filter(Boolean).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-    state.screen = state.myIdentity ? 'dashboard' : 'identity';
     render();
   }
 
   function render(){
-    if (state.screen === 'identity') renderIdentity();
+    if (state.screen === 'login') renderLogin();
     else if (state.screen === 'dashboard') renderDashboard();
     else if (state.screen === 'new-doc') renderNewDoc();
-    else if (state.screen === 'detail') renderDetail();
   }
 
-  function renderIdentity(){
+  function renderLogin(){
     ROOT.innerHTML = `
-      <div style="padding:48px 20px;max-width:400px;margin:0 auto;">
-        <h1 style="font-size:20px;font-weight:700;margin:0 0 4px;">Serah Terima Dokumen</h1>
-        <p style="color:#6b7280;font-size:14px;margin:0 0 24px;">Pilih identitas akun atau buat nama baru.</p>
-        ${state.users.length ? '<div style="margin-bottom:16px;">'+state.users.map(u => '<button class="st-btn" data-pick-user="'+esc(u)+'" style="text-align:left;display:flex;align-items:center;gap:8px;width:100%;margin-bottom:6px;">'+esc(u)+(u===ADMIN_NAME?' <span style="margin-left:auto;color:#7c3aed;font-size:11px;font-weight:700;">ADMIN</span>':'')+'</button>').join('')+'</div>' : ''}
-        <label class="st-label">Nama baru</label>
-        <div style="display:flex;gap:8px;">
-          <input class="st-input" id="new-user-input" placeholder="Nama lengkap" />
-          <button class="st-btn st-btn-primary" id="add-user-btn">Masuk</button>
+      <div style="padding:40px 20px;max-width:420px;margin:0 auto;">
+        <div class="st-card">
+          <h1 style="font-size:22px;font-weight:700;margin:0 0 6px;">Serah Terima Dokumen</h1>
+          <p style="color:#6b7280;font-size:14px;margin:0 0 20px;">Silakan masuk menggunakan Username & Password.</p>
+          
+          <label class="st-label">Username</label>
+          <input class="st-input" id="login-user" placeholder="Contoh: admin" />
+          
+          <label class="st-label">Password</label>
+          <input class="st-input" type="password" id="login-pass" placeholder="Password" />
+          
+          <button class="st-btn st-btn-primary" id="login-btn" style="width:100%;margin-top:8px;">Masuk</button>
+          
+          <div style="margin-top:16px;font-size:13px;color:#6b7280;text-align:center;">
+            Info Default Admin — User: <strong>admin</strong> | Pass: <strong>123</strong>
+          </div>
         </div>
       </div>
     `;
-    ROOT.querySelectorAll('[data-pick-user]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.myIdentity = btn.getAttribute('data-pick-user');
-        localStorage.setItem('st_my-identity', state.myIdentity);
+
+    const handleLogin = () => {
+      const u = ROOT.querySelector('#login-user').value.trim();
+      const p = ROOT.querySelector('#login-pass').value.trim();
+      if (!u || !p) { alert('Username dan Password wajib diisi!'); return; }
+
+      const found = state.users.find(x => x.username === u && x.password === p);
+      if (found) {
+        state.user = found;
+        saveStorage('logged_user', found);
         state.screen = 'dashboard';
         render();
-      });
-    });
-    const submit = () => {
-      const val = ROOT.querySelector('#new-user-input').value.trim();
-      if (!val) return;
-      if (!state.users.includes(val)) { state.users.push(val); saveStorage('users', state.users); }
-      state.myIdentity = val;
-      localStorage.setItem('st_my-identity', val);
-      state.screen = 'dashboard';
-      render();
+      } else {
+        alert('Username atau Password salah!');
+      }
     };
-    ROOT.querySelector('#add-user-btn').addEventListener('click', submit);
-    ROOT.querySelector('#new-user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') submit(); });
+
+    ROOT.querySelector('#login-btn').addEventListener('click', handleLogin);
+    ROOT.querySelector('#login-pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
   }
 
   function renderDashboard(){
     ROOT.innerHTML = `
-      <div style="padding:24px 10px 60px;">
+      <div style="padding:20px 0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h1 style="font-size:19px;font-weight:700;margin:0;">Dashboard Dokumen</h1>
-          <button class="st-btn" id="switch-identity-btn" style="font-size:13px;padding:6px 10px;">${esc(state.myIdentity)}</button>
+          <div>
+            <h1 style="font-size:19px;font-weight:700;margin:0;">Dashboard Dokumen</h1>
+            <p style="font-size:13px;color:#6b7280;margin:4px 0 0;">Login sebagai: <strong>${esc(state.user.username)}</strong></p>
+          </div>
+          <button class="st-btn" id="logout-btn" style="font-size:13px;color:#dc2626;border-color:#fca5a5;">Keluar</button>
         </div>
+        
         <button class="st-btn st-btn-primary" id="new-doc-btn" style="margin-bottom:16px;">+ Dokumen Baru</button>
-        <div style="color:#6b7280;font-size:14px;margin-bottom:12px;">Total Dokumen: ${state.docs.length}</div>
+        
+        <div style="font-size:14px;color:#6b7280;margin-bottom:12px;">Total Dokumen: ${state.docs.length}</div>
         <div id="doc-list">
           ${state.docs.length === 0 ? '<div class="st-card" style="text-align:center;color:#6b7280;">Belum ada dokumen.</div>' : state.docs.map(d => `
-            <div class="st-card" style="cursor:pointer;" data-doc-id="${d.id}">
+            <div class="st-card" style="margin-bottom:10px;">
               <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${esc(d.title)}</div>
-              <div style="font-size:13px;color:#6b7280;">Status: <strong>${esc(d.status)}</strong></div>
+              <div style="font-size:13px;color:#6b7280;">Dibuat oleh: ${esc(d.createdBy)} | Status: <strong>${esc(d.status)}</strong></div>
             </div>
           `).join('')}
         </div>
       </div>
     `;
-    ROOT.querySelector('#new-doc-btn').addEventListener('click', () => { state.screen = 'new-doc'; render(); });
-    ROOT.querySelector('#switch-identity-btn').addEventListener('click', () => { localStorage.removeItem('st_my-identity'); state.myIdentity = null; state.screen = 'identity'; render(); });
-    ROOT.querySelectorAll('[data-doc-id]').forEach(card => {
-      card.addEventListener('click', () => {
-        state.activeDocId = card.getAttribute('data-doc-id');
-        state.screen = 'detail';
-        render();
-      });
+
+    ROOT.querySelector('#logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('st_logged_user');
+      state.user = null;
+      state.screen = 'login';
+      render();
     });
+
+    ROOT.querySelector('#new-doc-btn').addEventListener('click', () => { state.screen = 'new-doc'; render(); });
   }
 
   function renderNewDoc(){
     ROOT.innerHTML = `
-      <div style="padding:24px 10px;">
+      <div style="padding:20px 0;">
         <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali</button>
         <div class="st-card">
           <h2 style="margin-top:0;font-size:17px;">Buat Dokumen Baru</h2>
           <label class="st-label">Judul Dokumen</label>
-          <input class="st-input" id="doc-title-input" placeholder="Contoh: Berita Acara Serah Terima" style="margin-bottom:12px;" />
-          <button class="st-btn st-btn-primary" id="save-doc-btn">Simpan Dokumen</button>
+          <input class="st-input" id="doc-title-input" placeholder="Contoh: Berita Acara Serah Terima" />
+          <button class="st-btn st-btn-primary" id="save-doc-btn" style="width:100%;margin-top:8px;">Simpan Dokumen</button>
         </div>
       </div>
     `;
+
     ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
     ROOT.querySelector('#save-doc-btn').addEventListener('click', () => {
       const title = ROOT.querySelector('#doc-title-input').value.trim();
-      if (!title) return alert('Judul dokumen wajib diisi!');
+      if (!title) { alert('Judul dokumen wajib diisi!'); return; }
+      
       const id = 'doc_' + Date.now();
-      const newDoc = { id, title, status: 'Draft', createdAt: new Date().toISOString(), createdBy: state.myIdentity };
+      const newDoc = { id, title, status: 'Draft', createdAt: new Date().toISOString(), createdBy: state.user.username };
       saveStorage(id, newDoc);
+      
       const docIds = loadStorage('doc-ids', []);
       docIds.push(id);
       saveStorage('doc-ids', docIds);
+      
       state.docs.unshift(newDoc);
       state.screen = 'dashboard';
       render();
     });
-  }
-
-  function renderDetail(){
-    const doc = state.docs.find(d => d.id === state.activeDocId);
-    if (!doc) { state.screen = 'dashboard'; render(); return; }
-    ROOT.innerHTML = `
-      <div style="padding:24px 10px;">
-        <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali ke Dashboard</button>
-        <div class="st-card">
-          <h2 style="margin-top:0;">${esc(doc.title)}</h2>
-          <p style="font-size:13px;color:#6b7280;">Dibuat oleh: ${esc(doc.createdBy)}</p>
-          <p>Status: <strong>${esc(doc.status)}</strong></p>
-        </div>
-      </div>
-    `;
-    ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
   }
 
   window.addEventListener('DOMContentLoaded', init);
