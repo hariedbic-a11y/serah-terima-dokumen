@@ -12,41 +12,46 @@
   #app-root input, #app-root select, #app-root textarea { font-family: inherit; font-size: 14px; }
   .st-btn {
     border: 1px solid #d7dae0; background: #fff; border-radius: 8px;
-    padding: 9px 16px; font-size: 14px; font-weight: 500; color: #1f2430; transition: background .12s;
+    padding: 8px 14px; font-size: 14px; font-weight: 500; color: #1f2430; transition: background .12s;
   }
   .st-btn:hover { background: #f4f5f7; }
   .st-btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
   .st-btn-primary:hover { background: #1d4ed8; }
+  .st-btn-danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+  .st-btn-danger:hover { background: #b91c1c; }
   .st-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .st-input { width: 100%; border: 1px solid #d7dae0; border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
   .st-input:focus { outline: 2px solid #2563eb33; border-color: #2563eb; }
   .st-label { font-size: 13px; font-weight: 600; color: #4b5262; margin-bottom: 6px; display: block; }
+  .st-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  .st-table th, .st-table td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; }
+  .st-table th { background: #f9fafb; font-weight: 600; }
 </style>
 <script>
 (function(){
   const ROOT = document.getElementById('app-root');
+  const ADMIN_NAME = 'Hari Santoso';
 
   function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function loadStorage(key, def){ try { const val = localStorage.getItem('st_' + key); return val ? JSON.parse(val) : def; } catch(e){ return def; } }
   function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){} }
 
   let state = {
-    user: null, // {username, role}
-    users: [],  // [{username, password, role}]
+    user: null,
+    users: [],
     docs: [],
     screen: 'login'
   };
 
   function init(){
-    // Akun default admin jika belum ada database user
     let users = loadStorage('users', []);
-    if (!users.some(u => u.username === 'admin')) {
-      users.push({ username: 'admin', password: '123', role: 'Administrator' });
+    // Pastikan admin utama Hari Santoso selalu ada
+    if (!users.some(u => u.username === ADMIN_NAME)) {
+      users.unshift({ username: ADMIN_NAME, password: '123', role: 'Super Admin' });
       saveStorage('users', users);
     }
     state.users = users;
 
-    // Cek apakah sudah login sebelumnya
     const savedUser = loadStorage('logged_user', null);
     if (savedUser) {
       state.user = savedUser;
@@ -63,6 +68,7 @@
   function render(){
     if (state.screen === 'login') renderLogin();
     else if (state.screen === 'dashboard') renderDashboard();
+    else if (state.screen === 'admin-users') renderAdminUsers();
     else if (state.screen === 'new-doc') renderNewDoc();
   }
 
@@ -74,15 +80,16 @@
           <p style="color:#6b7280;font-size:14px;margin:0 0 20px;">Silakan masuk menggunakan Username & Password.</p>
           
           <label class="st-label">Username</label>
-          <input class="st-input" id="login-user" placeholder="Contoh: admin" />
+          <input class="st-input" id="login-user" placeholder="Nama pengguna" />
           
           <label class="st-label">Password</label>
           <input class="st-input" type="password" id="login-pass" placeholder="Password" />
           
           <button class="st-btn st-btn-primary" id="login-btn" style="width:100%;margin-top:8px;">Masuk</button>
           
-          <div style="margin-top:16px;font-size:13px;color:#6b7280;text-align:center;">
-            Info Default Admin — User: <strong>admin</strong> | Pass: <strong>123</strong>
+          <div style="margin-top:16px;font-size:13px;color:#6b7280;text-align:center;line-height:1.5;">
+            Admin Utama: <strong>${ADMIN_NAME}</strong> (Pass default: <strong>123</strong>)<br>
+            Belum punya akun? <a href="#" id="toggle-reg" style="color:#2563eb;text-decoration:none;font-weight:600;">Daftar akun baru</a>
           </div>
         </div>
       </div>
@@ -93,33 +100,79 @@
       const p = ROOT.querySelector('#login-pass').value.trim();
       if (!u || !p) { alert('Username dan Password wajib diisi!'); return; }
 
-      const found = state.users.find(x => x.username === u && x.password === p);
+      const found = state.users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
       if (found) {
         state.user = found;
         saveStorage('logged_user', found);
         state.screen = 'dashboard';
         render();
       } else {
-        alert('Username atau Password salah!');
+        alert('Username atau Password salah! Jika lupa sandi, hubungi admin utama (Hari Santoso).');
       }
     };
 
     ROOT.querySelector('#login-btn').addEventListener('click', handleLogin);
     ROOT.querySelector('#login-pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+    ROOT.querySelector('#toggle-reg').addEventListener('click', (e) => { e.preventDefault(); renderRegister(); });
+  }
+
+  function renderRegister(){
+    ROOT.innerHTML = `
+      <div style="padding:40px 20px;max-width:420px;margin:0 auto;">
+        <div class="st-card">
+          <h1 style="font-size:22px;font-weight:700;margin:0 0 6px;">Daftar Akun Baru</h1>
+          <p style="color:#6b7280;font-size:14px;margin:0 0 20px;">Buat identitas akun untuk mengakses sistem.</p>
+          
+          <label class="st-label">Username</label>
+          <input class="st-input" id="reg-user" placeholder="Nama lengkap / Username" />
+          
+          <label class="st-label">Password</label>
+          <input class="st-input" type="password" id="reg-pass" placeholder="Buat password" />
+          
+          <button class="st-btn st-btn-primary" id="reg-btn" style="width:100%;margin-top:8px;">Daftar & Masuk</button>
+          <button class="st-btn" id="back-login-btn" style="width:100%;margin-top:8px;">Kembali ke Login</button>
+        </div>
+      </div>
+    `;
+
+    ROOT.querySelector('#back-login-btn').addEventListener('click', renderLogin);
+    ROOT.querySelector('#reg-btn').addEventListener('click', () => {
+      const u = ROOT.querySelector('#reg-user').value.trim();
+      const p = ROOT.querySelector('#reg-pass').value.trim();
+      if (!u || !p) { alert('Username dan Password wajib diisi!'); return; }
+
+      if (state.users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+        alert('Username sudah terdaftar! Gunakan nama lain.');
+        return;
+      }
+
+      const newUser = { username: u, password: p, role: 'User' };
+      state.users.push(newUser);
+      saveStorage('users', state.users);
+
+      state.user = newUser;
+      saveStorage('logged_user', newUser);
+      state.screen = 'dashboard';
+      render();
+    });
   }
 
   function renderDashboard(){
+    const isAdmin = state.user.username === ADMIN_NAME;
     ROOT.innerHTML = `
       <div style="padding:20px 0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <div>
             <h1 style="font-size:19px;font-weight:700;margin:0;">Dashboard Dokumen</h1>
-            <p style="font-size:13px;color:#6b7280;margin:4px 0 0;">Login sebagai: <strong>${esc(state.user.username)}</strong></p>
+            <p style="font-size:13px;color:#6b7280;margin:4px 0 0;">Login: <strong>${esc(state.user.username)}</strong> ${isAdmin ? '<span style="color:#7c3aed;font-weight:700;">(Admin Utama)</span>' : ''}</p>
           </div>
           <button class="st-btn" id="logout-btn" style="font-size:13px;color:#dc2626;border-color:#fca5a5;">Keluar</button>
         </div>
         
-        <button class="st-btn st-btn-primary" id="new-doc-btn" style="margin-bottom:16px;">+ Dokumen Baru</button>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+          <button class="st-btn st-btn-primary" id="new-doc-btn">+ Dokumen Baru</button>
+          ${isAdmin ? '<button class="st-btn" id="manage-users-btn" style="background:#7c3aed;color:#fff;border-color:#7c3aed;">Kelola User & Password</button>' : ''}
+        </div>
         
         <div style="font-size:14px;color:#6b7280;margin-bottom:12px;">Total Dokumen: ${state.docs.length}</div>
         <div id="doc-list">
@@ -141,6 +194,57 @@
     });
 
     ROOT.querySelector('#new-doc-btn').addEventListener('click', () => { state.screen = 'new-doc'; render(); });
+    if (isAdmin) {
+      ROOT.querySelector('#manage-users-btn').addEventListener('click', () => { state.screen = 'admin-users'; render(); });
+    }
+  }
+
+  function renderAdminUsers(){
+    ROOT.innerHTML = `
+      <div style="padding:20px 0;">
+        <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali ke Dashboard</button>
+        <div class="st-card">
+          <h2 style="margin-top:0;font-size:18px;">Manajemen User & Password</h2>
+          <p style="font-size:13px;color:#6b7280;">Hanya admin utama (${ADMIN_NAME}) yang dapat melihat dan mereset password pengguna.</p>
+          
+          <table class="st-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.users.map((u, idx) => `
+                <tr>
+                  <td><strong>${esc(u.username)}</strong> ${u.username === ADMIN_NAME ? '<span style="color:#7c3aed;font-size:11px;">(Admin Utama)</span>' : ''}</td>
+                  <td><code>${esc(u.password)}</code></td>
+                  <td>
+                    ${u.username !== ADMIN_NAME ? `<button class="st-btn st-btn-danger" style="padding:4px 8px;font-size:12px;" data-reset-idx="${idx}">Reset Sandi</button>` : '<span style="font-size:12px;color:#6b7280;">Terkunci</span>'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
+    ROOT.querySelectorAll('[data-reset-idx]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-reset-idx'));
+        const target = state.users[idx];
+        const newPass = prompt(`Masukkan password baru untuk user "${target.username}":`);
+        if (newPass) {
+          state.users[idx].password = newPass.trim();
+          saveStorage('users', state.users);
+          alert('Password berhasil diubah!');
+          renderAdminUsers();
+        }
+      });
+    });
   }
 
   function renderNewDoc(){
