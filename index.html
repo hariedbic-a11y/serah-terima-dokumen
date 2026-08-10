@@ -40,12 +40,12 @@
     user: null,
     users: [],
     docs: [],
+    activeDocId: null,
     screen: 'login'
   };
 
   function init(){
     let users = loadStorage('users', []);
-    // Pastikan admin utama Hari Santoso selalu ada
     if (!users.some(u => u.username === ADMIN_NAME)) {
       users.unshift({ username: ADMIN_NAME, password: '123', role: 'Super Admin' });
       saveStorage('users', users);
@@ -60,9 +60,13 @@
       state.screen = 'login';
     }
 
+    refreshDocs();
+    render();
+  }
+
+  function refreshDocs(){
     const docIds = loadStorage('doc-ids', []);
     state.docs = docIds.map(id => loadStorage('doc_' + id, null)).filter(Boolean).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-    render();
   }
 
   function render(){
@@ -70,6 +74,7 @@
     else if (state.screen === 'dashboard') renderDashboard();
     else if (state.screen === 'admin-users') renderAdminUsers();
     else if (state.screen === 'new-doc') renderNewDoc();
+    else if (state.screen === 'detail') renderDetail();
   }
 
   function renderLogin(){
@@ -105,6 +110,7 @@
         state.user = found;
         saveStorage('logged_user', found);
         state.screen = 'dashboard';
+        refreshDocs();
         render();
       } else {
         alert('Username atau Password salah! Jika lupa sandi, hubungi admin utama (Hari Santoso).');
@@ -153,6 +159,7 @@
       state.user = newUser;
       saveStorage('logged_user', newUser);
       state.screen = 'dashboard';
+      refreshDocs();
       render();
     });
   }
@@ -176,10 +183,17 @@
         
         <div style="font-size:14px;color:#6b7280;margin-bottom:12px;">Total Dokumen: ${state.docs.length}</div>
         <div id="doc-list">
-          ${state.docs.length === 0 ? '<div class="st-card" style="text-align:center;color:#6b7280;">Belum ada dokumen.</div>' : state.docs.map(d => `
-            <div class="st-card" style="margin-bottom:10px;">
-              <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${esc(d.title)}</div>
-              <div style="font-size:13px;color:#6b7280;">Dibuat oleh: ${esc(d.createdBy)} | Status: <strong>${esc(d.status)}</strong></div>
+          ${state.docs.length === 0 ? '<div class="st-card" style="text-align:center;color:#6b7280;">Belum ada dokumen. Klik "+ Dokumen Baru" untuk mulai.</div>' : state.docs.map(d => `
+            <div class="st-card" style="cursor:pointer;" data-doc-id="${d.id}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                  <div style="font-weight:600;font-size:16px;margin-bottom:4px;">${esc(d.title)}</div>
+                  <div style="font-size:13px;color:#6b7280;">Dibuat oleh: ${esc(d.createdBy)} | Status: <strong>${esc(d.status)}</strong></div>
+                </div>
+                <div>
+                  ${d.fileName ? '<span style="background:#e0f2fe;color:#0369a1;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Ada File</span>' : '<span style="background:#fef3c7;color:#b45309;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Belum ada file</span>'}
+                </div>
+              </div>
             </div>
           `).join('')}
         </div>
@@ -197,6 +211,14 @@
     if (isAdmin) {
       ROOT.querySelector('#manage-users-btn').addEventListener('click', () => { state.screen = 'admin-users'; render(); });
     }
+
+    ROOT.querySelectorAll('[data-doc-id]').forEach(card => {
+      card.addEventListener('click', () => {
+        state.activeDocId = card.getAttribute('data-doc-id');
+        state.screen = 'detail';
+        render();
+      });
+    });
   }
 
   function renderAdminUsers(){
@@ -255,6 +277,10 @@
           <h2 style="margin-top:0;font-size:17px;">Buat Dokumen Baru</h2>
           <label class="st-label">Judul Dokumen</label>
           <input class="st-input" id="doc-title-input" placeholder="Contoh: Berita Acara Serah Terima" />
+          
+          <label class="st-label">Unggah File (Word, Excel, PDF, Foto, dll)</label>
+          <input type="file" id="doc-file-input" class="st-input" style="padding:6px;" />
+          
           <button class="st-btn st-btn-primary" id="save-doc-btn" style="width:100%;margin-top:8px;">Simpan Dokumen</button>
         </div>
       </div>
@@ -263,19 +289,93 @@
     ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
     ROOT.querySelector('#save-doc-btn').addEventListener('click', () => {
       const title = ROOT.querySelector('#doc-title-input').value.trim();
+      const fileInput = ROOT.querySelector('#doc-file-input');
       if (!title) { alert('Judul dokumen wajib diisi!'); return; }
       
       const id = 'doc_' + Date.now();
-      const newDoc = { id, title, status: 'Draft', createdAt: new Date().toISOString(), createdBy: state.user.username };
-      saveStorage(id, newDoc);
       
-      const docIds = loadStorage('doc-ids', []);
-      docIds.push(id);
-      saveStorage('doc-ids', docIds);
-      
-      state.docs.unshift(newDoc);
-      state.screen = 'dashboard';
-      render();
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const newDoc = {
+            id,
+            title,
+            status: 'Draft',
+            createdAt: new Date().toISOString(),
+            createdBy: state.user.username,
+            fileName: file.name,
+            fileData: e.target.result,
+            fileType: file.type
+          };
+          saveAndFinish(id, newDoc);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const newDoc = {
+          id,
+          title,
+          status: 'Draft',
+          createdAt: new Date().toISOString(),
+          createdBy: state.user.username,
+          fileName: null,
+          fileData: null,
+          fileType: null
+        };
+        saveAndFinish(id, newDoc);
+      }
+    });
+  }
+
+  function saveAndFinish(id, docObj){
+    saveStorage(id, docObj);
+    const docIds = loadStorage('doc-ids', []);
+    docIds.push(id);
+    saveStorage('doc-ids', docIds);
+    refreshDocs();
+    state.screen = 'dashboard';
+    render();
+  }
+
+  function renderDetail(){
+    const doc = state.docs.find(d => d.id === state.activeDocId);
+    if (!doc) { state.screen = 'dashboard'; render(); return; }
+
+    ROOT.innerHTML = `
+      <div style="padding:20px 0;">
+        <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali ke Dashboard</button>
+        <div class="st-card">
+          <h2 style="margin-top:0;font-size:19px;">${esc(doc.title)}</h2>
+          <p style="font-size:13px;color:#6b7280;">Dibuat oleh: <strong>${esc(doc.createdBy)}</strong> | Tanggal: ${new Date(doc.createdAt).toLocaleString()}</p>
+          <hr style="border:0;border-top:1px solid #e5e7eb;margin:16px 0;">
+          
+          <h3 style="font-size:15px;margin-bottom:8px;">File Lampiran:</h3>
+          ${doc.fileName ? `
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div>
+                <strong>${esc(doc.fileName)}</strong>
+              </div>
+              <a href="${doc.fileData}" download="${doc.fileName}" class="st-btn st-btn-primary" style="text-decoration:none;font-size:13px;padding:6px 12px;">Unduh File</a>
+            </div>
+          ` : '<p style="color:#6b7280;font-size:14px;margin-bottom:16px;">Belum ada file yang diunggah pada dokumen ini.</p>'}
+
+          <div style="display:flex;gap:8px;margin-top:20px;">
+            <button class="st-btn st-btn-danger" id="delete-doc-btn" style="margin-left:auto;">Hapus Dokumen</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
+    ROOT.querySelector('#delete-doc-btn').addEventListener('click', () => {
+      if (confirm('Yakin ingin menghapus dokumen ini?')) {
+        localStorage.removeItem('st_' + doc.id);
+        const docIds = loadStorage('doc-ids', []).filter(x => x !== doc.id);
+        saveStorage('doc-ids', docIds);
+        refreshDocs();
+        state.screen = 'dashboard';
+        render();
+      }
     });
   }
 
