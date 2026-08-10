@@ -1,0 +1,252 @@
+<div id="app-root"></div>
+<style>
+  #app-root * { box-sizing: border-box; }
+  #app-root {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2430;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  #app-root button { font-family: inherit; cursor: pointer; }
+  #app-root input, #app-root select, #app-root textarea { font-family: inherit; font-size: 14px; }
+  .st-btn {
+    border: 1px solid #d7dae0; background: #fff; border-radius: 8px;
+    padding: 8px 14px; font-size: 14px; font-weight: 500; color: #1f2430; transition: background .12s;
+  }
+  .st-btn:hover { background: #f4f5f7; }
+  .st-btn:active { transform: scale(0.98); }
+  .st-btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+  .st-btn-primary:hover { background: #1d4ed8; }
+  .st-btn-danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+  .st-btn-danger:hover { background: #b91c1c; }
+  .st-btn-amber { background: #d97706; border-color: #d97706; color: #fff; }
+  .st-btn-amber:hover { background: #b45309; }
+  .st-btn-purple { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+  .st-btn-purple:hover { background: #6d28d9; }
+  .st-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .st-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; }
+  .st-input { width: 100%; border: 1px solid #d7dae0; border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+  .st-input:focus { outline: 2px solid #2563eb33; border-color: #2563eb; }
+  .st-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+  .st-label { font-size: 13px; font-weight: 600; color: #4b5262; margin-bottom: 4px; display: block; }
+  .st-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(17,20,28,0.45);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 16px; z-index: 100; overflow-y: auto;
+  }
+  .st-modal { background: #fff; border-radius: 14px; padding: 24px; width: 100%; max-width: 520px; margin-bottom: 40px; }
+  .st-color-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; }
+  .st-color-dot.active { border-color: #1f2430; }
+</style>
+<script>
+(function(){
+  const ROOT = document.getElementById('app-root');
+  const ADMIN_NAME = 'Hari Santoso';
+  const CHUNK_SIZE = 3500000;
+  const MAX_FILE_BYTES = 20 * 1024 * 1024;
+  const PDFJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+  const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+  const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  const ANNOT_COLORS = ['#dc2626', '#2563eb', '#16a34a', '#d97706', '#111827'];
+
+  const STATUS_META = {
+    in_progress: { label: 'Berjalan', bg: '#dbeafe', fg: '#1d4ed8' },
+    completed:   { label: 'Selesai', bg: '#dcfce7', fg: '#15803d' },
+    rejected:    { label: 'Ditolak', bg: '#fee2e2', fg: '#b91c1c' },
+  };
+  const ACTION_META = {
+    created:    { label: 'Dibuat', fg: '#4b5262' },
+    approve:    { label: 'Approve', fg: '#15803d' },
+    revise:     { label: 'Revisi', fg: '#b45309' },
+    reject:     { label: 'Tolak', fg: '#b91c1c' },
+    reupload:   { label: 'Upload ulang', fg: '#2563eb' },
+    admin_edit: { label: 'Diedit admin', fg: '#7c3aed' },
+    annotate:   { label: 'Ditandai/coret', fg: '#2563eb' },
+  };
+
+  let state = {
+    screen: 'loading', myIdentity: null, users: [], docs: [], activeDocId: null, filter: 'all',
+    fileCache: {}, templates: [],
+  };
+
+  function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function fmtDate(iso){
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) + ' ' +
+             d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+    } catch(e){ return iso; }
+  }
+  function fmtSize(bytes){ if (bytes > 1024*1024) return (bytes/(1024*1024)).toFixed(1) + ' MB'; return Math.round(bytes/1024) + ' KB'; }
+  function uid(){ return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function isAdmin(){ return state.myIdentity === ADMIN_NAME; }
+  
+  function icon(name, size){
+    size = size || 16;
+    const paths = {
+      check: '<path d="M20 6L9 17l-5-5"/>',
+      x: '<path d="M18 6L6 18M6 6l12 12"/>',
+      undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+      upload: '<path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/>',
+      plus: '<path d="M12 5v14M5 12h14"/>',
+      arrowleft: '<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',
+      download: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>',
+      user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
+      trash: '<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>',
+      eye: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>',
+      shield: '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>',
+      pen: '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+    };
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||'')+'</svg>';
+  }
+
+  async function loadUsers(){ try { const r = await window.storage.get('users', true); return r ? JSON.parse(r.value) : []; } catch(e){ return []; } }
+  async function saveUsers(list){ await window.storage.set('users', JSON.stringify(list), true); }
+  async function loadTemplates(){ try { const r = await window.storage.get('templates', true); return r ? JSON.parse(r.value) : []; } catch(e){ return []; } }
+  async function saveTemplates(list){ await window.storage.set('templates', JSON.stringify(list), true); }
+  async function loadDocIds(){ try { const r = await window.storage.get('doc-ids', true); return r ? JSON.parse(r.value) : []; } catch(e){ return []; } }
+  async function saveDocIds(list){ await window.storage.set('doc-ids', JSON.stringify(list), true); }
+  async function loadDoc(id){ try { const r = await window.storage.get('doc:'+id, true); return r ? JSON.parse(r.value) : null; } catch(e){ return null; } }
+  async function saveDoc(doc){ await window.storage.set('doc:'+doc.id, JSON.stringify(doc), true); }
+  async function loadMyIdentity(){ try { const r = await window.storage.get('my-identity', false); return r ? r.value : null; } catch(e){ return null; } }
+  async function saveMyIdentity(name){ await window.storage.set('my-identity', name, false); }
+
+  async function saveFileChunks(id, dataUrl){
+    const n = Math.ceil(dataUrl.length / CHUNK_SIZE);
+    for (let i = 0; i < n; i++){
+      const piece = dataUrl.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+      await window.storage.set('filechunk:'+id+':'+i, piece, true);
+    }
+    return n;
+  }
+  async function loadFileDataUrl(doc){
+    if (state.fileCache[doc.id]) return state.fileCache[doc.id];
+    const n = doc.fileMeta.chunkCount;
+    const parts = new Array(n);
+    await Promise.all(Array.from({length:n}, (_, i) =>
+      window.storage.get('filechunk:'+doc.id+':'+i, true).then(r => { parts[i] = r ? r.value : ''; })
+    ));
+    const full = parts.join('');
+    state.fileCache[doc.id] = full;
+    return full;
+  }
+  function readFileAsDataUrl(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function init(){
+    const [identity, users, ids, templates] = await Promise.all([loadMyIdentity(), loadUsers(), loadDocIds(), loadTemplates()]);
+    state.myIdentity = identity;
+    state.users = users;
+    state.templates = templates;
+    const docs = await Promise.all(ids.map(loadDoc));
+    state.docs = docs.filter(Boolean).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    state.screen = identity ? 'dashboard' : 'identity';
+    render();
+  }
+  async function refreshDocs(){
+    const ids = await loadDocIds();
+    const docs = await Promise.all(ids.map(loadDoc));
+    state.docs = docs.filter(Boolean).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  function render(){
+    if (state.screen === 'identity') renderIdentity();
+    else if (state.screen === 'dashboard') renderDashboard();
+    else if (state.screen === 'new-doc') renderNewDoc();
+    else if (state.screen === 'detail') renderDetail();
+  }
+
+  function renderIdentity(){
+    ROOT.innerHTML = `
+      <div style="padding:48px 20px;max-width:400px;margin:0 auto;">
+        <h1 style="font-size:20px;font-weight:700;margin:0 0 4px;">Serah Terima Dokumen</h1>
+        <p style="color:#6b7280;font-size:14px;margin:0 0 24px;">Pilih identitas akun atau buat nama baru.</p>
+        ${state.users.length ? '<div style="margin-bottom:16px;">'+state.users.map(u => '<button class="st-btn" data-pick-user="'+esc(u)+'" style="text-align:left;display:flex;align-items:center;gap:8px;width:100%;margin-bottom:6px;">'+icon('user',16)+' '+esc(u)+(u===ADMIN_NAME?' <span style="margin-left:auto;color:#7c3aed;font-size:11px;font-weight:700;">ADMIN</span>':'')+'</button>').join('')+'</div>' : ''}
+        <label class="st-label">Nama baru</label>
+        <div style="display:flex;gap:8px;">
+          <input class="st-input" id="new-user-input" placeholder="Nama lengkap" />
+          <button class="st-btn st-btn-primary" id="add-user-btn">Masuk</button>
+        </div>
+      </div>
+    `;
+    ROOT.querySelectorAll('[data-pick-user]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        state.myIdentity = btn.getAttribute('data-pick-user');
+        await saveMyIdentity(state.myIdentity);
+        state.screen = 'dashboard';
+        render();
+      });
+    });
+    const submit = async () => {
+      const val = ROOT.querySelector('#new-user-input').value.trim();
+      if (!val) return;
+      if (!state.users.includes(val)) { state.users.push(val); await saveUsers(state.users); }
+      state.myIdentity = val;
+      await saveMyIdentity(val);
+      state.screen = 'dashboard';
+      render();
+    };
+    ROOT.querySelector('#add-user-btn').addEventListener('click', submit);
+  }
+
+  function docProgress(doc){
+    const total = doc.stages.length;
+    const idx = doc.currentStageIndex;
+    if (doc.status === 'completed') return { text: 'Selesai semua tahap', pct: 100 };
+    if (doc.status === 'rejected') return { text: 'Ditolak', pct: Math.round(((idx+1)/total)*100) };
+    return { text: 'Tahap '+(idx+1)+' dari '+total, pct: Math.round((idx/total)*100) };
+  }
+
+  function renderDashboard(){
+    ROOT.innerHTML = `
+      <div style="padding:24px 20px 60px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h1 style="font-size:19px;font-weight:700;margin:0;">Dashboard Dokumen</h1>
+          <button class="st-btn" id="switch-identity-btn" style="font-size:13px;padding:6px 10px;">${esc(state.myIdentity)}</button>
+        </div>
+        <button class="st-btn st-btn-primary" id="new-doc-btn" style="margin-bottom:16px;">+ Dokumen Baru</button>
+        <div style="color:#6b7280;font-size:14px;">Total Dokumen: ${state.docs.length}</div>
+      </div>
+    `;
+    ROOT.querySelector('#new-doc-btn').addEventListener('click', () => { state.screen = 'new-doc'; render(); });
+    ROOT.querySelector('#switch-identity-btn').addEventListener('click', () => { state.screen = 'identity'; render(); });
+  }
+
+  function renderNewDoc(){
+    ROOT.innerHTML = `
+      <div style="padding:24px 20px;">
+        <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali</button>
+        <div class="st-card">
+          <h2>Formulir Dokumen Baru (Sederhana)</h2>
+          <p style="font-size:13px;color:#6b7280;">Gunakan halaman utama untuk melengkapi pembuatan dokumen secara utuh.</p>
+        </div>
+      </div>
+    `;
+    ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
+  }
+
+  function renderDetail(){
+    const doc = state.docs.find(d => d.id === state.activeDocId);
+    if (!doc) { state.screen = 'dashboard'; render(); return; }
+    ROOT.innerHTML = `
+      <div style="padding:24px 20px;">
+        <button class="st-btn" id="back-btn" style="margin-bottom:16px;">Kembali ke Dashboard</button>
+        <div class="st-card">
+          <h2 style="margin-top:0;">${esc(doc.title)}</h2>
+          <p>Status: <strong>${esc(doc.status)}</strong></p>
+          <p>File: ${esc(doc.fileMeta.fileName)} (${fmtSize(doc.fileMeta.sizeBytes)})</p>
+        </div>
+      </div>
+    `;
+    ROOT.querySelector('#back-btn').addEventListener('click', () => { state.screen = 'dashboard'; render(); });
+  }
+
+  init();
+})();
+</script>
