@@ -34,7 +34,7 @@
 
   function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function loadStorage(key, def){ try { const val = localStorage.getItem('st_' + key); return val ? JSON.parse(val) : def; } catch(e){ return def; } }
-  function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); } catch(e){ alert('Penyimpanan browser penuh!'); } }
+  function saveStorage(key, val){ try { localStorage.setItem('st_' + key, JSON.stringify(val)); return true; } catch(e){ alert('Gagal menyimpan ke memori browser!'); return false; } }
 
   let state = {
     user: null,
@@ -304,14 +304,17 @@
         fileName: fileName
       };
 
-      saveStorage(id, newDoc);
+      const saved1 = saveStorage(id, newDoc);
       const docIds = loadStorage('doc-ids', []);
       docIds.push(id);
-      saveStorage('doc-ids', docIds);
+      const saved2 = saveStorage('doc-ids', docIds);
 
-      refreshDocs();
-      state.screen = 'dashboard';
-      render();
+      if (saved1 && saved2) {
+        alert('Dokumen berhasil disimpan!');
+        refreshDocs();
+        state.screen = 'dashboard';
+        render();
+      }
     });
   }
 
@@ -330,7 +333,7 @@
           <h3 style="font-size:15px;margin-bottom:8px;">Informasi Lampiran:</h3>
           ${doc.fileName ? `
             <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:8px;margin-bottom:16px;">
-              <strong>Nama File:</strong> ${esc(doc.fileName)}
+              <strong>Nama File Terlampir:</strong> ${esc(doc.fileName)}
             </div>
           ` : '<p style="color:#6b7280;font-size:14px;margin-bottom:16px;">Tidak ada lampiran file.</p>'}
 
