@@ -6,7 +6,6 @@
     <title>Document Handover System - PT Permata Husada Sakti</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-50 flex h-screen overflow-hidden text-gray-800">
@@ -17,141 +16,302 @@
             <div class="flex items-center gap-3 mb-8 px-2">
                 <div class="bg-indigo-900 text-white p-2 rounded-lg font-bold">PHS</div>
                 <div>
-                    <h1 class="font-bold text-sm text-indigo-950 leading-tight">Document Handover System</h1>
+                    <h1 class="font-bold text-sm text-indigo-950 leading-tight">Document Handover</h1>
                     <p class="text-xs text-gray-500">PT Permata Husada Sakti</p>
                 </div>
             </div>
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-2">Main Menu</p>
             <nav class="space-y-1">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium bg-indigo-50 text-indigo-900 rounded-lg border border-indigo-200">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium bg-indigo-50 text-indigo-900 rounded-lg">
                     <i class="fa-solid fa-house"></i> Dashboard
                 </button>
                 <button onclick="switchTab('create')" id="nav-create" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
-                    <i class="fa-solid fa-file-circle-plus"></i> Create Document
+                    <i class="fa-solid fa-file-circle-plus"></i> + Dokumen Baru
                 </button>
-                <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
-                    <i class="fa-solid fa-list-check"></i> My Tasks
+                <button onclick="switchTab('users')" id="nav-users" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                    <i class="fa-solid fa-users"></i> Kelola User
                 </button>
             </nav>
         </div>
 
         <div class="border-t pt-4">
             <div class="p-3 bg-indigo-50 rounded-lg mb-2">
-                <p class="font-semibold text-xs text-indigo-950">Hari Santoso, S. Sos</p>
-                <p class="text-[11px] text-gray-500">Manager</p>
+                <p class="font-semibold text-xs text-indigo-950" id="current-user-name">Hari Santoso, S. Sos</p>
+                <p class="text-[11px] text-gray-500">Admin Utama</p>
             </div>
-            <button onclick="alert('Berhasil Logout')" class="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+            <button onclick="alert('Keluar aplikasi')" class="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
             </button>
         </div>
     </aside>
 
-    <!-- CONTENT AREA -->
+    <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto p-8">
         
-        <!-- VIEW: DASHBOARD -->
+        <!-- 1. DASHBOARD VIEW -->
         <div id="view-dashboard">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h2 class="text-2xl font-bold text-indigo-950">Welcome back, Hari Santoso, S. Sos</h2>
-                    <p class="text-sm text-gray-500">Here's an overview of your document activity.</p>
+                    <h2 class="text-2xl font-bold text-indigo-950">Dashboard Dokumen</h2>
+                    <p class="text-sm text-gray-500">Ringkasan aktivitas dan daftar penyerahan dokumen.</p>
                 </div>
-                <button onclick="switchTab('create')" class="bg-indigo-900 hover:bg-indigo-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
-                    + Create Document
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="switchTab('users')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
+                        Kelola User & Password
+                    </button>
+                    <button onclick="switchTab('create')" class="bg-indigo-900 hover:bg-indigo-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
+                        + Dokumen Baru
+                    </button>
+                </div>
             </div>
 
-            <!-- Metrics -->
+            <!-- Ringkasan Jumlah -->
             <div class="grid grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
-                    <div><p class="text-xs font-medium text-gray-500">In Progress</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                    <div><p class="text-xs font-medium text-gray-500">In Progress</p><p class="text-2xl font-bold text-gray-800" id="count-progress">0</p></div>
                     <div class="bg-blue-50 text-blue-600 p-3 rounded-lg"><i class="fa-solid fa-hourglass-half"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
-                    <div><p class="text-xs font-medium text-gray-500">Revision Required</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                    <div><p class="text-xs font-medium text-gray-500">Revision Required</p><p class="text-2xl font-bold text-gray-800" id="count-revision">0</p></div>
                     <div class="bg-amber-50 text-amber-600 p-3 rounded-lg"><i class="fa-solid fa-rotate"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
-                    <div><p class="text-xs font-medium text-gray-500">Completed</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                    <div><p class="text-xs font-medium text-gray-500">Completed</p><p class="text-2xl font-bold text-gray-800" id="count-completed">0</p></div>
                     <div class="bg-emerald-50 text-emerald-600 p-3 rounded-lg"><i class="fa-solid fa-check"></i></div>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
-                    <div><p class="text-xs font-medium text-gray-500">Rejected</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                    <div><p class="text-xs font-medium text-gray-500">Rejected</p><p class="text-2xl font-bold text-gray-800" id="count-rejected">0</p></div>
                     <div class="bg-red-50 text-red-600 p-3 rounded-lg"><i class="fa-solid fa-xmark"></i></div>
                 </div>
             </div>
 
+            <!-- Tabel Dokumen -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 font-bold text-gray-700">Daftar Dokumen Serah Terima</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-600">
+                        <thead class="bg-gray-100 text-xs uppercase text-gray-500">
+                            <tr>
+                                <th class="p-3">No. Dokumen</th>
+                                <th class="p-3">Tipe</th>
+                                <th class="p-3">Pengirim</th>
+                                <th class="p-3">Penerima</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Berkas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="document-table-body">
+                            <tr><td colspan="6" class="p-4 text-center text-gray-400">Memuat data dari Supabase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BUAT DOKUMEN BARU -->
+        <div id="view-create" class="hidden max-w-2xl">
+            <h2 class="text-2xl font-bold text-indigo-950 mb-6">Tambah Serah Terima Dokumen</h2>
+            <form id="docForm" onsubmit="submitDocument(event)" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Nomor Dokumen</label>
+                    <input type="text" id="doc_number" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: DOC/PHS/2026/001">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Tipe Dokumen</label>
+                    <input type="text" id="doc_type" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Kontrak Kerjasama / Invoice">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Penerima Dokumen</label>
+                    <select id="recipient_id" class="w-full p-2 border rounded-lg text-sm bg-white"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Keterangan / Catatan</label>
+                    <textarea id="description" rows="3" class="w-full p-2 border rounded-lg text-sm" placeholder="Catatan dokumen..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Upload File Dokumen (PDF/Gambar)</label>
+                    <input type="file" id="doc_file" class="w-full text-sm border p-2 rounded-lg">
+                </div>
+                <div class="flex gap-3 justify-end pt-4">
+                    <button type="button" onclick="switchTab('dashboard')" class="px-4 py-2 text-sm border rounded-lg">Batal</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-indigo-900 text-white rounded-lg hover:bg-indigo-800">Simpan & Kirim</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. KELOLA USER -->
+        <div id="view-users" class="hidden">
+            <h2 class="text-2xl font-bold text-indigo-950 mb-6">Kelola Pengguna System</h2>
             <div class="grid grid-cols-3 gap-6">
-                <div class="col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-center items-center min-h-[250px]">
-                    <i class="fa-solid fa-file-lines text-4xl text-gray-300 mb-2"></i>
-                    <p class="font-semibold text-gray-600">No document activity yet</p>
-                    <p class="text-xs text-gray-400">Your recent document activity will appear here.</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-3">
-                    <h3 class="font-bold text-sm text-gray-800 mb-4">Quick Actions</h3>
-                    <button onclick="switchTab('create')" class="w-full text-left flex items-center gap-3 p-3 border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/30 transition">
-                        <i class="fa-solid fa-file-circle-plus text-indigo-900"></i>
-                        <div><p class="text-xs font-bold">Create Document</p><p class="text-[10px] text-gray-400">Create and send a new document</p></div>
-                    </button>
-                    <button onclick="switchTab('tasks')" class="w-full text-left flex items-center gap-3 p-3 border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/30 transition">
-                        <i class="fa-solid fa-list-check text-indigo-900"></i>
-                        <div><p class="text-xs font-bold">My Tasks</p><p class="text-[10px] text-gray-400">Documents that require your action</p></div>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW: CREATE DOCUMENT FORM -->
-        <div id="view-create" class="hidden">
-            <h2 class="text-2xl font-bold text-indigo-950 mb-6">Create New Document Handover</h2>
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm max-w-2xl">
-                <form id="docForm" onsubmit="handleSave(event)" class="space-y-4">
+                <!-- Form Tambah User -->
+                <form id="userForm" onsubmit="submitUser(event)" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-base text-gray-800">Tambah User Baru</h3>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Nomor Dokumen</label>
-                        <input type="text" id="original_doc_number" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: DOC/2026/001">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">NIK</label>
+                        <input type="text" id="user_nik" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: PHS-102">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Tipe Dokumen</label>
-                        <input type="text" id="document_type" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Suransi / Contract">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="user_fullname" required class="w-full p-2 border rounded-lg text-sm" placeholder="Nama pegawai">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Keterangan / Deskripsi</label>
-                        <textarea id="description" rows="3" class="w-full p-2 border rounded-lg text-sm" placeholder="Catatan singkat..."></textarea>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Role / Jabatan</label>
+                        <input type="text" id="user_role" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Manager / Admin / Staff">
                     </div>
-                    <div class="flex gap-3 justify-end pt-4">
-                        <button type="button" onclick="switchTab('dashboard')" class="px-4 py-2 text-sm font-semibold border rounded-lg">Batal</button>
-                        <button type="submit" class="px-4 py-2 text-sm font-semibold bg-indigo-900 text-white rounded-lg hover:bg-indigo-800">Simpan Dokumen</button>
-                    </div>
+                    <button type="submit" class="w-full py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700">Tambah User</button>
                 </form>
-            </div>
-        </div>
 
-        <!-- VIEW: MY TASKS -->
-        <div id="view-tasks" class="hidden">
-            <h2 class="text-2xl font-bold text-indigo-950 mb-6">My Tasks</h2>
-            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <p class="text-sm text-gray-500">Daftar tugas serah terima dokumen akan ditampilkan di sini.</p>
+                <!-- Tabel Daftar User -->
+                <div class="col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-4">
+                    <h3 class="font-bold text-base text-gray-800 mb-4">Daftar Pengguna Active</h3>
+                    <table class="w-full text-left text-sm text-gray-600">
+                        <thead class="bg-gray-100 text-xs uppercase text-gray-500">
+                            <tr>
+                                <th class="p-2">NIK</th>
+                                <th class="p-2">Nama Lengkap</th>
+                                <th class="p-2">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            <tr><td colspan="3" class="p-4 text-center text-gray-400">Memuat data user...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
     </main>
 
     <script>
-        // Navigasi Tab Sederhana
+        // Konfigurasi Supabase menggunakan variabel lingkungan Vercel
+        const SUPABASE_URL = "YOUR_SUPABASE_URL"; 
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const supabaseClient = supabase.createClient(
+            window.env?.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_URL,
+            window.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_KEY
+        );
+
         function switchTab(tab) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-create').classList.add('hidden');
-            document.getElementById('view-tasks').classList.add('hidden');
-
+            document.getElementById('view-users').classList.add('hidden');
             document.getElementById('view-' + tab).classList.remove('hidden');
+
+            if(tab === 'dashboard') loadDocuments();
+            if(tab === 'users') loadUsers();
+            if(tab === 'create') loadUserOptions();
         }
 
-        function handleSave(e) {
-            e.preventDefault();
-            alert('Form berhasil dikirim!');
-            switchTab('dashboard');
+        // Fetch Data User
+        async function loadUsers() {
+            const { data, error } = await supabaseClient.from('users').select('*');
+            const tbody = document.getElementById('user-table-body');
+            if(error || !data) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Gagal memuat user</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(u => `
+                <tr class="border-b">
+                    <td class="p-2 font-mono">${u.nik || '-'}</td>
+                    <td class="p-2 font-semibold">${u.full_name}</td>
+                    <td class="p-2">${u.role || '-'}</td>
+                </tr>
+            `).join('');
         }
+
+        async function loadUserOptions() {
+            const { data } = await supabaseClient.from('users').select('*');
+            const select = document.getElementById('recipient_id');
+            if(data) {
+                select.innerHTML = data.map(u => `<option value="${u.id}">${u.full_name} (${u.role})</option>`).join('');
+            }
+        }
+
+        // Submit User Baru
+        async function submitUser(e) {
+            e.preventDefault();
+            const nik = document.getElementById('user_nik').value;
+            const full_name = document.getElementById('user_fullname').value;
+            const role = document.getElementById('user_role').value;
+
+            const { error } = await supabaseClient.from('users').insert([{ nik, full_name, role }]);
+            if(!error) {
+                alert('User berhasil ditambahkan!');
+                document.getElementById('userForm').reset();
+                loadUsers();
+            } else {
+                alert('Gagal menambah user: ' + error.message);
+            }
+        }
+
+        // Fetch Data Dokumen
+        async function loadDocuments() {
+            const { data, error } = await supabaseClient.from('documents').select(`
+                *,
+                sender:users!sender_id(full_name),
+                recipient:users!recipient_id(full_name)
+            `);
+
+            const tbody = document.getElementById('document-table-body');
+            if(error || !data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400">Belum ada dokumen. Klik "+ Dokumen Baru" untuk membuat.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(d => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-semibold text-indigo-950">${d.original_doc_number}</td>
+                    <td class="p-3">${d.document_type}</td>
+                    <td class="p-3">${d.sender?.full_name || '-'}</td>
+                    <td class="p-3">${d.recipient?.full_name || '-'}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">${d.status || 'in_progress'}</span></td>
+                    <td class="p-3">${d.file_url ? `<a href="${d.file_url}" target="_blank" class="text-indigo-600 underline">Lihat File</a>` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Submit Dokumen Baru & Upload File
+        async function submitDocument(e) {
+            e.preventDefault();
+            const doc_number = document.getElementById('doc_number').value;
+            const doc_type = document.getElementById('doc_type').value;
+            const recipient_id = document.getElementById('recipient_id').value;
+            const description = document.getElementById('description').value;
+            const fileInput = document.getElementById('doc_file').files[0];
+
+            let file_url = null;
+
+            // Fitur Upload ke Storage Supabase
+            if (fileInput) {
+                const filePath = `documents/${Date.now()}_${fileInput.name}`;
+                const { data, error: uploadErr } = await supabaseClient.storage.from('documents').upload(filePath, fileInput);
+                if (!uploadErr && data) {
+                    const { data: publicUrlData } = supabaseClient.storage.from('documents').getPublicUrl(filePath);
+                    file_url = publicUrlData.publicUrl;
+                }
+            }
+
+            const { error } = await supabaseClient.from('documents').insert([{
+                original_doc_number: doc_number,
+                document_type: doc_type,
+                recipient_id: recipient_id,
+                description: description,
+                file_url: file_url,
+                status: 'in_progress'
+            }]);
+
+            if(!error) {
+                alert('Dokumen berhasil dikirim!');
+                document.getElementById('docForm').reset();
+                switchTab('dashboard');
+            } else {
+                alert('Gagal menyimpan dokumen: ' + error.message);
+            }
+        }
+
+        // Muat data awal
+        loadDocuments();
     </script>
 </body>
 </html>
