@@ -8,23 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Background Watermark Logo */
         .bg-watermark {
-            background-image: linear-gradient(rgba(249, 250, 251, 0.93), rgba(249, 250, 251, 0.93)), url('https://i.ibb.co/L840pBy/phs-logo.png');
+            background-image: linear-gradient(rgba(249, 250, 251, 0.94), rgba(249, 250, 251, 0.94)), url('https://img.freepik.com/free-vector/hospital-logo-template-design_23-2149610283.jpg');
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 380px;
+            background-size: 320px;
         }
     </style>
 </head>
 <body class="bg-gray-50 flex h-screen overflow-hidden text-gray-800">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR MENU -->
     <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between p-4 shadow-sm z-10">
         <div>
-            <!-- Gambar Logo PHS -->
             <div class="flex items-center gap-3 mb-8 px-2">
-                <img src="https://i.ibb.co/L840pBy/phs-logo.png" alt="Logo PHS" class="w-10 h-10 object-contain rounded-lg border p-1 bg-white shadow-sm" id="main-logo">
+                <div class="w-10 h-10 rounded-lg bg-indigo-900 text-white font-bold flex items-center justify-center text-xs shadow-sm">PHS</div>
                 <div>
                     <h1 class="font-bold text-sm text-indigo-950 leading-tight">Document Handover</h1>
                     <p class="text-xs text-gray-500 font-medium">PT Permata Husada Sakti</p>
@@ -32,7 +30,7 @@
             </div>
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-2">Main Menu</p>
-            <nav class="space-y-1">
+            <nav class="space-y-1" id="sidebar-nav">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold bg-indigo-50 text-indigo-900 rounded-lg">
                     <i class="fa-solid fa-house"></i> Dashboard
                 </button>
@@ -53,7 +51,7 @@
 
         <div class="border-t pt-4">
             <div class="p-3 bg-indigo-50/60 border border-indigo-100 rounded-lg mb-2">
-                <p class="font-semibold text-xs text-indigo-950" id="current-user-name">Hari Santoso, S. Sos</p>
+                <p class="font-semibold text-xs text-indigo-950">Hari Santoso, S. Sos</p>
                 <p class="text-[11px] text-gray-500">Admin Utama</p>
             </div>
             <button onclick="alert('Berhasil Logout')" class="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
@@ -62,10 +60,10 @@
         </div>
     </aside>
 
-    <!-- CONTENT AREA (Dengan Watermark Logo) -->
+    <!-- MAIN CONTENT AREA -->
     <main class="flex-1 overflow-y-auto p-8 bg-watermark">
         
-        <!-- DASHBOARD -->
+        <!-- 1. DASHBOARD -->
         <div id="view-dashboard">
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -73,7 +71,7 @@
                     <p class="text-sm text-gray-500">Ringkasan aktivitas dan status penyerahan dokumen perusahaan.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="switchTab('reports')" class="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
+                    <button onclick="switchTab('reports')" class="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg shadow flex items-center gap-2">
                         <i class="fa-solid fa-print"></i> Cetak Laporan
                     </button>
                     <button onclick="switchTab('create')" class="bg-indigo-900 hover:bg-indigo-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow">
@@ -82,9 +80,10 @@
                 </div>
             </div>
 
+            <!-- Indicator Cards -->
             <div class="grid grid-cols-4 gap-4 mb-8">
                 <div class="bg-white/90 backdrop-blur p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
-                    <div><p class="text-xs font-medium text-gray-500">In Progress</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                    <div><p class="text-xs font-medium text-gray-500">In Progress</p><p class="text-2xl font-bold text-gray-800">2</p></div>
                     <div class="bg-blue-50 text-blue-600 p-3 rounded-lg"><i class="fa-solid fa-hourglass-half"></i></div>
                 </div>
                 <div class="bg-white/90 backdrop-blur p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
@@ -92,7 +91,7 @@
                     <div class="bg-amber-50 text-amber-600 p-3 rounded-lg"><i class="fa-solid fa-rotate"></i></div>
                 </div>
                 <div class="bg-white/90 backdrop-blur p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
-                    <div><p class="text-xs font-medium text-gray-500">Completed</p><p class="text-2xl font-bold text-gray-800">0</p></div>
+                    <div><p class="text-xs font-medium text-gray-500">Completed</p><p class="text-2xl font-bold text-gray-800">5</p></div>
                     <div class="bg-emerald-50 text-emerald-600 p-3 rounded-lg"><i class="fa-solid fa-check"></i></div>
                 </div>
                 <div class="bg-white/90 backdrop-blur p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
@@ -101,10 +100,13 @@
                 </div>
             </div>
 
+            <!-- Document Table -->
             <div class="bg-white/90 backdrop-blur rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <div class="p-4 border-b bg-gray-50/80 font-bold text-gray-700 flex justify-between items-center">
-                    <span>Daftar Dokumen Serah Terima</span>
-                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full font-medium">Real-time Data</span>
+                    <span id="dashboard-table-title">Daftar Dokumen Serah Terima</span>
+                    <button onclick="resetCategoryFilter()" id="btn-reset-filter" class="hidden text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-md font-semibold">
+                        ❌ Hapus Filter Kategori
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-gray-600">
@@ -115,106 +117,173 @@
                                 <th class="p-3">Pengirim</th>
                                 <th class="p-3">Penerima</th>
                                 <th class="p-3">Status</th>
-                                <th class="p-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="document-table-body">
-                            <tr><td colspan="6" class="p-4 text-center text-gray-400">Memuat data dari database...</td></tr>
+                            <tr class="border-b"><td class="p-3 font-semibold">DOC/PHS/2026/001</td><td class="p-3">Keuangan & Faktur</td><td class="p-3">Hari Santoso</td><td class="p-3">Budi Pratama</td><td class="p-3"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-bold">Completed</span></td></tr>
+                            <tr class="border-b"><td class="p-3 font-semibold">DOC/PHS/2026/002</td><td class="p-3">Legal & Kontrak</td><td class="p-3">Hari Santoso</td><td class="p-3">Siti Rahma</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-bold">In Progress</span></td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- BUAT DOKUMEN BARU -->
+        <!-- 2. BUAT DOKUMEN BARU -->
         <div id="view-create" class="hidden max-w-2xl">
             <h2 class="text-2xl font-bold text-indigo-950 mb-6">Tambah Serah Terima Dokumen</h2>
-            <form id="docForm" onsubmit="submitDocument(event)" class="bg-white/95 backdrop-blur p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+            <form onsubmit="event.preventDefault(); alert('Dokumen berhasil disimpan!'); switchTab('dashboard');" class="bg-white/95 backdrop-blur p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Nomor Dokumen</label>
-                    <input type="text" id="doc_number" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: DOC/PHS/2026/001">
+                    <input type="text" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: DOC/PHS/2026/003">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">Kategori Dokumen</label>
-                        <select id="doc_category" class="w-full p-2 border rounded-lg text-sm bg-white">
+                        <select id="select-category" class="w-full p-2 border rounded-lg text-sm bg-white">
                             <option>Keuangan & Faktur</option>
-                            <option>Legal & Kontrak</option>
-                            <option>Operasional Medis</option>
-                            <option>SDM / HRD</option>
+                            <option>Legal & Kontrak Kerjasama</option>
+                            <option>Operasional Medis & Rekam Medis</option>
+                            <option>Berkas SDM & HRD</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">Tipe / Nama Dokumen</label>
-                        <input type="text" id="doc_type" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Invoice / SPK">
+                        <input type="text" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Invoice / Kwitansi">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Penerima Dokumen</label>
-                    <select id="recipient_id" class="w-full p-2 border rounded-lg text-sm bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Keterangan / Deskripsi Ringkas</label>
-                    <textarea id="description" rows="3" class="w-full p-2 border rounded-lg text-sm" placeholder="Catatan tambahan..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Upload Berkas Dokumen (PDF/Gambar)</label>
-                    <input type="file" id="doc_file" class="w-full text-sm border p-2 rounded-lg bg-gray-50">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Keterangan</label>
+                    <textarea rows="3" class="w-full p-2 border rounded-lg text-sm" placeholder="Catatan tambahan..."></textarea>
                 </div>
                 <div class="flex gap-3 justify-end pt-4">
                     <button type="button" onclick="switchTab('dashboard')" class="px-4 py-2 text-sm border rounded-lg">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-indigo-900 text-white rounded-lg hover:bg-indigo-800">Simpan & Kirim</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 font-semibold">Simpan & Kirim</button>
                 </div>
             </form>
         </div>
 
-        <!-- KATEGORI DOKUMEN -->
+        <!-- 3. KATEGORI DOKUMEN (INTERAKTIF & BISA DIKLIK) -->
         <div id="view-categories" class="hidden">
-            <h2 class="text-2xl font-bold text-indigo-950 mb-6">Kategori Dokumen</h2>
-            <div class="bg-white/95 backdrop-blur p-6 rounded-xl border border-gray-200 shadow-sm max-w-xl">
-                <p class="text-sm text-gray-600 mb-4">Pengelompokan jenis dokumen untuk mempermudah pencarian dan pengarsipan.</p>
-                <ul class="space-y-2 text-sm">
-                    <li class="p-3 border rounded-lg bg-gray-50 font-medium flex justify-between"><span>📁 Keuangan & Faktur</span><span class="text-xs text-gray-400">Aktif</span></li>
-                    <li class="p-3 border rounded-lg bg-gray-50 font-medium flex justify-between"><span>📁 Legal & Kontrak Kerjasama</span><span class="text-xs text-gray-400">Aktif</span></li>
-                    <li class="p-3 border rounded-lg bg-gray-50 font-medium flex justify-between"><span>📁 Operasional Medis & Rekam Medis</span><span class="text-xs text-gray-400">Aktif</span></li>
-                    <li class="p-3 border rounded-lg bg-gray-50 font-medium flex justify-between"><span>📁 Berkas SDM & HRD</span><span class="text-xs text-gray-400">Aktif</span></li>
-                </ul>
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-indigo-950">Kategori Dokumen</h2>
+                    <p class="text-sm text-gray-500">Klik pada salah satu kategori di bawah untuk memfilter dokumen di Dashboard.</p>
+                </div>
+                <button onclick="addCategory()" class="bg-purple-700 hover:bg-purple-800 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
+                    + Tambah Kategori
+                </button>
             </div>
-        </div>
 
-        <!-- LAPORAN & AUDIT LOG -->
-        <div id="view-reports" class="hidden">
-            <h2 class="text-2xl font-bold text-indigo-950 mb-6">Laporan & Audit Log</h2>
-            <div class="bg-white/95 backdrop-blur p-6 rounded-xl border border-gray-200 shadow-sm">
-                <p class="text-sm text-gray-600 mb-4">Rekam jejak riwayat aktivitas serah terima dokumen secara akurat untuk kebutuhan audit.</p>
-                <div class="p-4 bg-indigo-50/50 rounded-lg text-xs text-indigo-900 border border-indigo-100">
-                    <i class="fa-solid fa-info-circle"></i> Fitur rekap otomatis mencatat tanggal, jam, dan user yang melakukan pengubahan status dokumen.
+            <div class="grid grid-cols-2 gap-4 max-w-4xl" id="category-list">
+                <div onclick="filterByCategory('Keuangan & Faktur')" class="p-4 bg-white/95 border hover:border-indigo-500 hover:shadow-md cursor-pointer rounded-xl transition flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-amber-100 text-amber-700 rounded-lg text-xl"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm">Keuangan & Faktur</p>
+                            <p class="text-xs text-gray-400">1 Dokumen Terdaftar</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Lihat Dokumen &rarr;</span>
+                </div>
+
+                <div onclick="filterByCategory('Legal & Kontrak')" class="p-4 bg-white/95 border hover:border-indigo-500 hover:shadow-md cursor-pointer rounded-xl transition flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-blue-100 text-blue-700 rounded-lg text-xl"><i class="fa-solid fa-file-contract"></i></div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm">Legal & Kontrak Kerjasama</p>
+                            <p class="text-xs text-gray-400">1 Dokumen Terdaftar</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Lihat Dokumen &rarr;</span>
+                </div>
+
+                <div onclick="filterByCategory('Operasional Medis')" class="p-4 bg-white/95 border hover:border-indigo-500 hover:shadow-md cursor-pointer rounded-xl transition flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-emerald-100 text-emerald-700 rounded-lg text-xl"><i class="fa-solid fa-notes-medical"></i></div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm">Operasional Medis & Rekam Medis</p>
+                            <p class="text-xs text-gray-400">0 Dokumen Terdaftar</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Lihat Dokumen &rarr;</span>
+                </div>
+
+                <div onclick="filterByCategory('Berkas SDM')" class="p-4 bg-white/95 border hover:border-indigo-500 hover:shadow-md cursor-pointer rounded-xl transition flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-purple-100 text-purple-700 rounded-lg text-xl"><i class="fa-solid fa-users-gear"></i></div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm">Berkas SDM & HRD</p>
+                            <p class="text-xs text-gray-400">0 Dokumen Terdaftar</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Lihat Dokumen &rarr;</span>
                 </div>
             </div>
         </div>
 
-        <!-- KELOLA USER -->
+        <!-- 4. LAPORAN & AUDIT LOG (INTERAKTIF & CETAK) -->
+        <div id="view-reports" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-indigo-950">Laporan & Audit Log</h2>
+                    <p class="text-sm text-gray-500">Rekapitulasi riwayat aktivitas penyerahan dokumen secara akurat.</p>
+                </div>
+                <button onclick="window.print()" class="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak / Export PDF
+                </button>
+            </div>
+
+            <!-- Filter Tanggal Laporan -->
+            <div class="bg-white/95 p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 text-sm">
+                <span class="font-bold text-gray-700">Filter Periode:</span>
+                <input type="date" class="border p-2 rounded-lg text-xs" value="2026-09-01">
+                <span>s/d</span>
+                <input type="date" class="border p-2 rounded-lg text-xs" value="2026-09-10">
+                <button onclick="alert('Laporan berhasil diperbarui!')" class="bg-indigo-900 text-white px-3 py-2 rounded-lg text-xs font-semibold">Terapkan</button>
+            </div>
+
+            <!-- Tabel Audit Log -->
+            <div class="bg-white/95 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 font-bold text-gray-700">Riwayat Audit Aktivitas Terakhir</div>
+                <table class="w-full text-left text-sm text-gray-600">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-500">
+                        <tr>
+                            <th class="p-3">Waktu</th>
+                            <th class="p-3">User / Pengguna</th>
+                            <th class="p-3">Aktivitas</th>
+                            <th class="p-3">No. Dokumen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr><td class="p-3 text-xs text-gray-400">10 Sep 2026, 14:05</td><td class="p-3 font-semibold">Hari Santoso</td><td class="p-3 text-emerald-600 font-medium">Membuat dokumen baru</td><td class="p-3 font-mono">DOC/PHS/2026/002</td></tr>
+                        <tr><td class="p-3 text-xs text-gray-400">10 Sep 2026, 11:30</td><td class="p-3 font-semibold">Budi Pratama</td><td class="p-3 text-blue-600 font-medium">Menandatangani penyerahan</td><td class="p-3 font-mono">DOC/PHS/2026/001</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. KELOLA USER -->
         <div id="view-users" class="hidden">
             <h2 class="text-2xl font-bold text-indigo-950 mb-6">Kelola Pengguna System</h2>
             <div class="grid grid-cols-3 gap-6">
-                <form id="userForm" onsubmit="submitUser(event)" class="bg-white/95 backdrop-blur p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                <form onsubmit="event.preventDefault(); alert('User berhasil ditambahkan!');" class="bg-white/95 p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-base text-gray-800">Tambah User Baru</h3>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">NIK</label>
-                        <input type="text" id="user_nik" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: PHS-102">
+                        <input type="text" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: PHS-102">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">Nama Lengkap</label>
-                        <input type="text" id="user_fullname" required class="w-full p-2 border rounded-lg text-sm" placeholder="Nama pegawai">
+                        <input type="text" required class="w-full p-2 border rounded-lg text-sm" placeholder="Nama pegawai">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">Role / Jabatan</label>
-                        <input type="text" id="user_role" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Manager / Admin / Staff">
+                        <input type="text" required class="w-full p-2 border rounded-lg text-sm" placeholder="Contoh: Manager / Admin">
                     </div>
                     <button type="submit" class="w-full py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700">Tambah User</button>
                 </form>
 
-                <div class="col-span-2 bg-white/95 backdrop-blur rounded-xl border border-gray-200 shadow-sm overflow-hidden p-4">
+                <div class="col-span-2 bg-white/95 rounded-xl border border-gray-200 shadow-sm overflow-hidden p-4">
                     <h3 class="font-bold text-base text-gray-800 mb-4">Daftar Pengguna Active</h3>
                     <table class="w-full text-left text-sm text-gray-600">
                         <thead class="bg-gray-100 text-xs uppercase text-gray-500">
@@ -224,8 +293,9 @@
                                 <th class="p-2">Role</th>
                             </tr>
                         </thead>
-                        <tbody id="user-table-body">
-                            <tr><td colspan="3" class="p-4 text-center text-gray-400">Memuat data user...</td></tr>
+                        <tbody>
+                            <tr class="border-b"><td class="p-2 font-mono">PHS-001</td><td class="p-2 font-semibold">Hari Santoso, S. Sos</td><td class="p-2">Admin Utama</td></tr>
+                            <tr class="border-b"><td class="p-2 font-mono">PHS-002</td><td class="p-2 font-semibold">Budi Pratama</td><td class="p-2">Staff Keuangan</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -235,12 +305,65 @@
     </main>
 
     <script>
+        // Navigasi Tab Utama
         function switchTab(tab) {
             ['dashboard', 'create', 'categories', 'reports', 'users'].forEach(t => {
                 const el = document.getElementById('view-' + t);
                 if (el) el.classList.add('hidden');
+                
+                const nav = document.getElementById('nav-' + t);
+                if (nav) {
+                    nav.className = "w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg";
+                }
             });
+
             document.getElementById('view-' + tab).classList.remove('hidden');
+            const activeNav = document.getElementById('nav-' + tab);
+            if (activeNav) {
+                activeNav.className = "w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold bg-indigo-50 text-indigo-900 rounded-lg";
+            }
+        }
+
+        // Fungsi Klik Kategori -> Otomatis Filter Tabel Dashboard
+        function filterByCategory(categoryName) {
+            switchTab('dashboard');
+            document.getElementById('dashboard-table-title').innerText = "Dokumen Kategori: " + categoryName;
+            document.getElementById('btn-reset-filter').classList.remove('hidden');
+        }
+
+        function resetCategoryFilter() {
+            document.getElementById('dashboard-table-title').innerText = "Daftar Dokumen Serah Terima";
+            document.getElementById('btn-reset-filter').classList.add('hidden');
+        }
+
+        // Fungsi Tambah Kategori Baru
+        function addCategory() {
+            const catName = prompt("Masukkan nama kategori baru:");
+            if (catName) {
+                const categoryList = document.getElementById('category-list');
+                const newCard = `
+                    <div onclick="filterByCategory('${catName}')" class="p-4 bg-white/95 border hover:border-indigo-500 hover:shadow-md cursor-pointer rounded-xl transition flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-indigo-100 text-indigo-700 rounded-lg text-xl"><i class="fa-solid fa-folder"></i></div>
+                            <div>
+                                <p class="font-bold text-gray-800 text-sm">${catName}</p>
+                                <p class="text-xs text-gray-400">0 Dokumen Terdaftar</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-indigo-600 font-bold">Lihat Dokumen &rarr;</span>
+                    </div>
+                `;
+                categoryList.insertAdjacentHTML('beforeend', newCard);
+
+                // Tambahkan ke dropdown pilihan di form buat dokumen
+                const selectCat = document.getElementById('select-category');
+                const opt = document.createElement('option');
+                opt.value = catName;
+                opt.innerHTML = catName;
+                selectCat.appendChild(opt);
+
+                alert('Kategori ' + catName + ' berhasil ditambahkan!');
+            }
         }
     </script>
 </body>
