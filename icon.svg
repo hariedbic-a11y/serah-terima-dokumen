@@ -1,43 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 200" width="100%" height="100%">
-  <!-- LOGO 1: PT PERMATA HUSADA SAKTI -->
-  <g id="logo-phs" transform="translate(15, 10)">
-    <!-- Balok Navy Huruf L -->
-    <path d="M 10 30 L 65 30 L 65 105 L 125 105 L 125 165 L 10 165 Z" fill="#1b1c5c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 200" width="100%" height="100%">
+  <!-- 1. LOGO PERMATA HUSADA SAKTI -->
+  <g id="logo-phs" transform="translate(10, 10)">
+    <!-- Balok Navy Huruf L Tegak Solid -->
+    <path d="M 15 35 L 75 35 L 75 110 L 140 110 L 140 170 L 15 170 Z" fill="#1b1c5c"/>
     
-    <!-- Roda Cakra Biru Muda -->
-    <circle cx="112" cy="55" r="48" fill="none" stroke="#005bac" stroke-width="5"/>
-    <!-- Titik Pusat Merah Bulat -->
-    <circle cx="112" cy="55" r="14" fill="#dc2626"/>
+    <!-- Cakra Matahari Medis Biru -->
+    <circle cx="125" cy="58" r="50" fill="none" stroke="#005bac" stroke-width="6"/>
+    <!-- Titik Pusat Merah Bulat Pekat -->
+    <circle cx="125" cy="58" r="15" fill="#dc2626"/>
     
-    <!-- Jari-Jari Roda Cakra Medis -->
-    <line x1="112" y1="7" x2="112" y2="103" stroke="#005bac" stroke-width="4.5"/>
-    <line x1="64" y1="55" x2="160" y2="55" stroke="#005bac" stroke-width="4.5"/>
-    <line x1="78" y1="21" x2="146" y2="89" stroke="#005bac" stroke-width="4.5"/>
-    <line x1="78" y1="89" x2="146" y2="21" stroke="#005bac" stroke-width="4.5"/>
+    <!-- 8 Jari-Jari Roda Cakra Medis Lengkap -->
+    <line x1="125" y1="8" x2="125" y2="108" stroke="#005bac" stroke-width="5"/>
+    <line x1="75" y1="58" x2="175" y2="58" stroke="#005bac" stroke-width="5"/>
+    <line x1="89.6" y1="22.6" x2="160.4" y2="93.4" stroke="#005bac" stroke-width="5"/>
+    <line x1="89.6" y1="93.4" x2="160.4" y2="22.6" stroke="#005bac" stroke-width="5"/>
 
-    <!-- Teks Resmi: PERMATA HUSADA SAKTI -->
-    <g font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="900" fill="#1b1c5c" font-size="42" letter-spacing="2">
-      <text x="180" y="58">PERMATA</text>
-      <text x="180" y="105">HUSADA</text>
-      <text x="180" y="152">SAKTI</text>
+    <!-- Teks Resmi 3 Baris: PERMATA HUSADA SAKTI -->
+    <g font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="900" fill="#1b1c5c" font-size="44" letter-spacing="2">
+      <text x="200" y="62">PERMATA</text>
+      <text x="200" y="112">HUSADA</text>
+      <text x="200" y="162">SAKTI</text>
     </g>
   </g>
 
-  <!-- GARIS VERTIKAL PEMBATAS -->
-  <line x1="515" y1="35" x2="515" y2="165" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- GARIS PEMISAH HALUS TENGAH -->
+  <line x1="570" y1="35" x2="570" y2="165" stroke="#cbd5e1" stroke-width="2.5"/>
 
-  <!-- LOGO 2: RUMAH SAKIT GRHA PERMATA IBU -->
-  <g id="logo-rpi" transform="translate(540, 10)">
-    <!-- Bulan Sabit / Lingkaran Hijau Toska -->
-    <circle cx="75" cy="90" r="70" fill="none" stroke="#047857" stroke-width="12"/>
+  <!-- 2. LOGO RUMAH SAKIT GRHA PERMATA IBU -->
+  <g id="logo-rpi" transform="translate(605, 10)">
+    <!-- Lingkaran / Bulan Sabit Hijau Toska -->
+    <circle cx="80" cy="95" r="75" fill="none" stroke="#047857" stroke-width="14"/>
     
-    <!-- Siluet Ibu Menggendong Bayi -->
-    <path d="M 60 50 C 74 50 85 58 85 70 C 85 82 75 88 63 92 C 55 94 48 104 48 120 L 92 120 C 96 120 100 114 100 107 C 100 85 84 66 60 50 Z" fill="#047857"/>
-    <circle cx="68" cy="65" r="7.5" fill="#ffffff"/>
-    <path d="M 50 98 C 60 98 68 104 68 114 L 42 114 C 42 104 45 98 50 98 Z" fill="#047857"/>
+    <!-- Siluet Ibu Menggendong Bayi Lengkap -->
+    <path d="M 62 48 C 78 48 90 58 90 72 C 90 85 79 92 66 96 C 56 99 50 110 50 128 L 98 128 C 103 128 107 121 107 114 C 107 90 89 68 62 48 Z" fill="#047857"/>
+    <circle cx="72" cy="66" r="8.5" fill="#ffffff"/>
+    <!-- Bayi Digendong -->
+    <path d="M 54 102 C 65 102 74 109 74 120 L 44 120 C 44 109 48 102 54 102 Z" fill="#047857"/>
 
-    <!-- Teks Resmi: Rumah Sakit Grha PERMATA IBU -->
-    <text x="165" y="75" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="600" font-size="28" fill="#1e293b" letter-spacing="0.5">Rumah Sakit</text>
-    <text x="165" y="122" font-family="'Plus Jakarta Sans', Georgia, serif" font-weight="900" font-style="italic" font-size="40" fill="#047857" letter-spacing="1">Grha PERMATA IBU</text>
+    <!-- Teks Resmi Lengkap (Termasuk kata IBU) -->
+    <text x="180" y="80" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="600" font-size="30" fill="#1e293b" letter-spacing="0.5">Rumah Sakit</text>
+    <text x="180" y="130" font-family="'Plus Jakarta Sans', Georgia, serif" font-weight="900" font-style="italic" font-size="44" fill="#047857" letter-spacing="1.5">Grha PERMATA IBU</text>
   </g>
 </svg>
