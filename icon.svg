@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 120" width="100%" height="100%">
+  <!-- 1. SIMBOL LOGO PERMATA HUSADA SAKTI -->
+  <g id="logo-phs">
+    <!-- Kotak L Biru Tua / Navy -->
+    <path d="M 12 36 L 40 36 L 40 76 L 68 76 L 68 104 L 12 104 Z" fill="#1b1464"/>
+    <!-- Cakra Matahari Biru Muda -->
+    <circle cx="58" cy="46" r="26" fill="none" stroke="#005bac" stroke-width="3"/>
+    <!-- Titik Pusat Merah -->
+    <circle cx="58" cy="46" r="6.5" fill="#ed1c24"/>
+    <!-- Jari-jari Roda Cakra -->
+    <line x1="58" y1="20" x2="58" y2="72" stroke="#005bac" stroke-width="2.5"/>
+    <line x1="32" y1="46" x2="84" y2="46" stroke="#005bac" stroke-width="2.5"/>
+    <line x1="39.6" y1="27.6" x2="76.4" y2="64.4" stroke="#005bac" stroke-width="2.5"/>
+    <line x1="39.6" y1="64.4" x2="76.4" y2="27.6" stroke="#005bac" stroke-width="2.5"/>
+  </g>
+
+  <!-- TEKS NAMA PT PERMATA HUSADA SAKTI -->
+  <g font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="800" fill="#1b1464" font-size="20" letter-spacing="1">
+    <text x="96" y="44">PERMATA</text>
+    <text x="96" y="68">HUSADA</text>
+    <text x="96" y="92">SAKTI</text>
+  </g>
+
+  <!-- 2. SIMBOL LOGO RS GRHA PERMATA IBU -->
+  <g id="logo-rpi" transform="translate(320, 10)">
+    <!-- Lingkaran Luar Hijau Toska -->
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#007a3d" stroke-width="7"/>
+    <!-- Siluet Ibu & Bayi -->
+    <path d="M 44 26 C 52 26 58 32 58 39 C 58 46 52 50 45 52 C 40 54 36 60 36 68 L 62 68 C 65 68 67 65 67 61 C 67 48 57 37 44 26 Z" fill="#007a3d"/>
+    <circle cx="48" cy="36" r="5" fill="#ffffff"/>
+    <path d="M 39 56 C 44 56 48 60 48 65 L 34 65 C 34 60 36 56 39 56 Z" fill="#007a3d"/>
+    
+    <!-- Teks Rumah Sakit Grha Permata Ibu -->
+    <text x="105" y="40" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="600" font-size="14" fill="#333333">Rumah Sakit</text>
+    <text x="105" y="65" font-family="'Plus Jakarta Sans', Georgia, serif" font-weight="800" font-style="italic" font-size="21" fill="#007a3d" letter-spacing="0.5">Grha PERMATA IBU</text>
+  </g>
+</svg>
