@@ -30,8 +30,9 @@
                             amber: '#f59e0b',
                             emerald: '#10b981',
                             blue: '#0284c7',
-                            navy: '#1b1d5c',
-                            rose: '#f43f5e'
+                            navy: '#1b1c5c',
+                            rose: '#f43f5e',
+                            dark: '#0c101b'
                         }
                     }
                 }
@@ -42,11 +43,12 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at 10% 20%, #161e31, #0a0d14 70%);
+            background: radial-gradient(circle at 10% 20%, #171f35, #080b12 85%);
             min-height: 100vh;
             color: #f1f5f9;
         }
 
+        /* Glassmorphism Styles (Sesuai Video 1 & 3) */
         .glass-panel {
             background: rgba(22, 28, 45, 0.75);
             backdrop-filter: blur(20px);
@@ -55,7 +57,7 @@
         }
 
         .glass-card {
-            background: rgba(29, 38, 62, 0.6);
+            background: rgba(29, 38, 62, 0.58);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -78,17 +80,19 @@
             box-shadow: 0 0 16px rgba(255, 107, 74, 0.25);
         }
 
-        .drop-zone-active {
-            border-color: #ff6b4a !important;
-            background: rgba(255, 107, 74, 0.08) !important;
-            transform: scale(1.01);
+        /* Basketball Basket Animation (Sesuai Video 2) */
+        .basket-hoop {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .drag-shooting .basket-ball {
+            transform: translateY(35px) scale(0.85);
+            opacity: 1;
+        }
+        .drag-shooting .basket-hoop {
+            transform: scale(1.1);
         }
 
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 107, 74, 0.5); }
-
+        /* Print Format */
         @media print {
             body { background: #ffffff !important; color: #000000 !important; }
             aside, header, nav, #btn-print-action, #search-box-audit, .no-print { display: none !important; }
@@ -105,14 +109,14 @@
     <!-- DESKTOP SIDEBAR -->
     <aside class="hidden md:flex flex-col w-72 glass-panel m-3.5 rounded-3xl p-5 justify-between shadow-2xl z-20 shrink-0">
         <div>
-            <!-- Banner Logo Proporsional Sesuai Asli di PC -->
+            <!-- Banner Logo PHS & RPI Berdampingan (Proporsi Akurat) -->
             <div class="pb-5 border-b border-white/5">
                 <div class="w-full h-16 bg-white p-2 rounded-2xl flex items-center justify-center shadow-md">
                     <img src="icon.svg" alt="PT Permata Husada Sakti - RS Grha Permata Ibu" class="w-full h-full object-contain">
                 </div>
             </div>
 
-            <!-- Menu Navigasi Lengkap & Profesional -->
+            <!-- Navigasi Menu Lengkap -->
             <div class="mt-5 space-y-1">
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Navigasi Utama</p>
                 
@@ -159,30 +163,36 @@
             </div>
         </div>
 
+        <!-- Tombol Beralih Login / Akun (Sesuai Video 3) -->
         <div class="pt-3 border-t border-white/5">
-            <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">
-                    HS
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/5">
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white shrink-0">
+                        HS
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold text-white truncate" id="profile-name">Hari Santoso, S. Sos</p>
+                        <p class="text-[10px] text-gray-400 truncate">Kepala Pengawas</p>
+                    </div>
                 </div>
-                <div class="overflow-hidden">
-                    <p class="text-xs font-bold text-white truncate" id="profile-name">Hari Santoso, S. Sos</p>
-                    <p class="text-[10px] text-gray-400 truncate">Kepala Pengawas Berkas</p>
-                </div>
+                <button onclick="openGlassyAuthModal()" title="Ganti User / Login" class="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition">
+                    <i class="fa-solid fa-right-left text-xs"></i>
+                </button>
             </div>
         </div>
     </aside>
 
     <!-- MOBILE TOPBAR DENGAN LOGO BANNER LENGKAP -->
     <header class="md:hidden flex items-center justify-between px-4 py-2.5 glass-panel border-b border-white/5 z-20">
-        <div class="h-10 w-52 bg-white px-2 py-1 rounded-xl flex items-center justify-center shadow">
+        <div class="h-10 w-56 bg-white px-2 py-1 rounded-xl flex items-center justify-center shadow">
             <img src="icon.svg" alt="Logo PHS RPI" class="w-full h-full object-contain">
         </div>
-        <div class="w-8 h-8 rounded-full bg-brand-orange/20 border border-brand-orange/40 flex items-center justify-center text-xs font-bold text-brand-orange">
+        <button onclick="openGlassyAuthModal()" class="w-8 h-8 rounded-full bg-brand-orange/20 border border-brand-orange/40 flex items-center justify-center text-xs font-bold text-brand-orange">
             HS
-        </div>
+        </button>
     </header>
 
-    <!-- MAIN SCROLLABLE CONTAINER -->
+    <!-- MAIN SCROLLABLE CONTAINER (Video 1 Style Dashboard) -->
     <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6 space-y-6">
 
         <!-- 1. DASHBOARD -->
@@ -209,7 +219,7 @@
                 </div>
             </div>
 
-            <!-- Kartu Status Metrik -->
+            <!-- Kartu Status Metrik Melayang -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
                     <div>
@@ -330,7 +340,7 @@
             </div>
         </section>
 
-        <!-- 2. BUAT SERAH TERIMA BARU DENGAN POSISI LEMARI ARSIP -->
+        <!-- 2. BUAT SERAH TERIMA (DENGAN ANIMASI BASKETBALL UPLOAD DARI VIDEO 2) -->
         <section id="view-create" class="hidden max-w-2xl mx-auto space-y-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -378,11 +388,10 @@
                     </div>
                 </div>
 
-                <!-- Lokasi Fisik Lemari Arsip -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-300 mb-1.5">Lokasi Lemari / Rak Arsip Fisik</label>
-                        <input type="text" id="doc-rack" placeholder="Contoh: Lemari A - Rak 03 (Folder Merah)" class="w-full p-3 rounded-2xl glass-input text-xs">
+                        <input type="text" id="doc-rack" placeholder="Contoh: Lemari A - Rak 03" class="w-full p-3 rounded-2xl glass-input text-xs">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-300 mb-1.5">Kurir / Pengantar Berkas</label>
@@ -395,25 +404,54 @@
                     <textarea id="doc-description" rows="2" required placeholder="Tuliskan isi berkas yang diserahterimakan..." class="w-full p-3 rounded-2xl glass-input text-xs"></textarea>
                 </div>
 
-                <!-- DRAG & DROP UPLOAD INTERAKTIF -->
+                <!-- BASKETBALL UPLOAD ANIMATION (Persis Sesuai Video Referensi 2) -->
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-1.5">Lampirkan File / Scan Berkas (PDF / Foto)</label>
-                    <div id="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" onclick="document.getElementById('hidden-file-input').click()" class="border-2 border-dashed border-white/15 rounded-3xl p-6 text-center cursor-pointer hover:border-brand-orange/60 transition-all flex flex-col items-center justify-center gap-2 bg-white/[0.02]">
-                        <input type="file" id="hidden-file-input" class="hidden" onchange="handleFileChosen(event)">
-                        <div class="w-12 h-12 rounded-2xl bg-brand-orange/10 text-brand-orange flex items-center justify-center text-xl shadow-inner">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                        <p class="text-xs font-bold text-white mt-1">Tarik & Jatuhkan file di sini atau <span class="text-brand-orange underline">Pilih File</span></p>
-                        <p class="text-[10px] text-gray-500">Mendukung PDF, PNG, JPG (Maks. 25 MB)</p>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-bold text-gray-300">Upload Files & Attachment</label>
+                        <span id="badge-upload-count" class="text-[10px] bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-semibold">Uploaded: 0</span>
+                    </div>
 
-                        <div id="upload-box" class="hidden w-full max-w-xs mt-3 p-3 rounded-xl bg-slate-900/90 border border-white/10 text-left">
-                            <div class="flex justify-between items-center text-[10px] mb-1">
-                                <span id="file-name-label" class="font-semibold truncate max-w-[150px] text-white">berkas.pdf</span>
-                                <span id="upload-status-label" class="text-brand-orange font-bold">100%</span>
+                    <div id="drop-zone" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)" 
+                         ondrop="handleDrop(event)" 
+                         onclick="document.getElementById('hidden-file-input').click()" 
+                         class="border-2 border-dashed border-white/20 rounded-3xl p-6 text-center cursor-pointer hover:border-indigo-400 transition-all flex flex-col items-center justify-center bg-white/[0.02] relative overflow-hidden group">
+                        
+                        <input type="file" id="hidden-file-input" class="hidden" onchange="handleFileChosen(event)">
+
+                        <!-- Bola Basket Meluncur Masuk Ring -->
+                        <div class="w-16 h-20 flex flex-col items-center justify-between mb-2 pointer-events-none">
+                            <div class="basket-ball w-6 h-6 rounded-full bg-gradient-to-tr from-amber-600 to-brand-orange shadow-md border border-amber-300/40 flex items-center justify-center transition-all duration-300">
+                                <span class="text-[8px] text-white font-black">🏀</span>
                             </div>
-                            <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                <div id="upload-bar" class="h-full bg-brand-orange rounded-full transition-all duration-300" style="width: 100%;"></div>
+                            <!-- Ring Basket -->
+                            <div class="basket-hoop w-12 h-8 border-2 border-indigo-400/80 border-t-0 rounded-b-xl relative flex items-center justify-center bg-indigo-500/5">
+                                <div class="w-10 h-0.5 bg-indigo-400/80 absolute top-0"></div>
+                                <div class="w-6 h-4 border-l border-r border-indigo-300/40 opacity-70"></div>
                             </div>
+                        </div>
+
+                        <p class="text-xs font-bold text-white">Drop files here <span class="text-gray-400 font-normal">or take the shot</span></p>
+                        <p class="text-[10px] text-indigo-300/70 mt-0.5">Aim the file & release to shoot into the basket!</p>
+                    </div>
+
+                    <!-- Kartu Berkas Uploaded Selesai (Sesuai Video 2) -->
+                    <div id="upload-result-card" class="hidden mt-3 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="px-2 py-1 bg-rose-500/20 text-rose-400 text-[10px] font-black rounded-md border border-rose-500/30">
+                                PDF
+                            </div>
+                            <div class="overflow-hidden">
+                                <p id="result-filename" class="text-xs font-bold text-white truncate max-w-[200px]">document.pdf</p>
+                                <p class="text-[10px] text-emerald-400 flex items-center gap-1 font-semibold">
+                                    <i class="fa-solid fa-check"></i> File uploaded successfully
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">Done</span>
+                            <p class="text-[9px] text-gray-400 mt-1">2.4 MB</p>
                         </div>
                     </div>
                 </div>
@@ -576,7 +614,7 @@
             </div>
         </section>
 
-        <!-- 7. JEJAK AUDIT & TARIK LAPORAN (KOP SURAT LENGKAP PHS & RPI) -->
+        <!-- 7. JEJAK AUDIT & TARIK LAPORAN (KOP RESMI DENGAN ICON.SVG) -->
         <section id="view-audit" class="space-y-4 hidden">
             <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 no-print">
                 <div>
@@ -589,13 +627,13 @@
                 </button>
             </div>
 
-            <!-- AREA BERITA ACARA RESMI -->
+            <!-- CONTAINER BERITA ACARA RESMI CETAK -->
             <div class="glass-panel p-6 rounded-3xl" id="print-area">
                 
-                <!-- KOP SURAT MENGGUNAKAN LOGO LENGKAP PROPORSIONAL -->
+                <!-- KOP RESMI DUA LOGO BERDAMPINGAN -->
                 <div class="border-b-2 border-slate-700 pb-4 mb-4 flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="w-72 h-16 bg-white p-2 rounded-xl flex items-center justify-center border border-slate-300">
+                        <div class="w-80 h-16 bg-white p-2 rounded-xl flex items-center justify-center border border-slate-300">
                             <img src="icon.svg" alt="Logo PHS RPI" class="w-full h-full object-contain">
                         </div>
                     </div>
@@ -643,7 +681,7 @@
                     </table>
                 </div>
 
-                <!-- KOLOM TANDA TANGAN BERITA ACARA FISIK (TAMPIL SAAT CETAK) -->
+                <!-- LEMBAR TANDA TANGAN CETAK -->
                 <div class="hidden print-ttd mt-12 pt-6 flex justify-between text-xs text-slate-800">
                     <div class="text-center w-48">
                         <p>Pihak Yang Menyerahkan,</p>
@@ -722,7 +760,7 @@
 
     </main>
 
-    <!-- MOBILE NAVIGATION (DAPAT DIAKSES DI HP DENGAN SCROLL RAPI) -->
+    <!-- MOBILE NAVIGATION -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/10 px-2 py-2 flex justify-around items-center z-30">
         <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-brand-orange text-xs">
             <i class="fa-solid fa-layer-group text-sm"></i>
@@ -747,7 +785,65 @@
         </button>
     </nav>
 
-    <!-- MODAL POPUP: TANDA TANGAN DIGITAL (CANVAS) -->
+    <!-- MODAL POPUP 1: GLASSY AUTHENTICATION / LOGIN V2 (PERSIS VIDEO REFERENSI 3) -->
+    <div id="modal-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-3xl max-w-md w-full border border-white/15 relative overflow-hidden shadow-2xl">
+            <!-- Glass Switcher Header -->
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                <div>
+                    <h3 id="auth-title" class="text-base font-bold text-white">Welcome Back!</h3>
+                    <p id="auth-subtitle" class="text-[11px] text-gray-400">Masuk dengan identitas pegawai Anda</p>
+                </div>
+                <button onclick="closeGlassyAuthModal()" class="text-gray-400 hover:text-white text-sm">✕</button>
+            </div>
+
+            <!-- Form Mode: Sign In -->
+            <form id="form-signin" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">NIK / Username</label>
+                    <input type="text" id="auth-login-user" required placeholder="Contoh: PHS-001" class="w-full p-3 rounded-2xl glass-input text-xs">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Password</label>
+                    <input type="password" id="auth-login-pass" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 transition">
+                    Sign In
+                </button>
+                <div class="text-center pt-2">
+                    <button type="button" onclick="toggleAuthMode('signup')" class="text-[11px] text-gray-400 hover:text-white">
+                        Belum punya akun? <span class="text-brand-orange font-semibold underline">Daftar Akun Baru</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form Mode: Sign Up (Hidden di Awal) -->
+            <form id="form-signup" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Nama Lengkap</label>
+                    <input type="text" required placeholder="Nama Anda" class="w-full p-3 rounded-2xl glass-input text-xs">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Email / NIK</label>
+                    <input type="text" required placeholder="PHS-109 / nama@phs.co.id" class="w-full p-3 rounded-2xl glass-input text-xs">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Buat Password</label>
+                    <input type="password" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 hover:brightness-110 transition">
+                    Create Account
+                </button>
+                <div class="text-center pt-2">
+                    <button type="button" onclick="toggleAuthMode('signin')" class="text-[11px] text-gray-400 hover:text-white">
+                        Sudah punya akun? <span class="text-brand-orange font-semibold underline">Sign In Di Sini</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP 2: TANDA TANGAN DIGITAL (CANVAS) -->
     <div id="modal-signature" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="glass-panel p-6 rounded-3xl max-w-sm w-full space-y-4 border border-white/15">
             <div class="flex justify-between items-center">
@@ -793,49 +889,77 @@
             }
         }
 
+        // BASKETBALL DROPZONE LOGIC (Sesuai Video 2)
         function handleDragOver(e) {
             e.preventDefault();
-            document.getElementById('drop-zone').classList.add('drop-zone-active');
+            document.getElementById('drop-zone').classList.add('drag-shooting');
         }
         function handleDragLeave(e) {
             e.preventDefault();
-            document.getElementById('drop-zone').classList.remove('drop-zone-active');
+            document.getElementById('drop-zone').classList.remove('drag-shooting');
         }
         function handleDrop(e) {
             e.preventDefault();
-            document.getElementById('drop-zone').classList.remove('drop-zone-active');
+            document.getElementById('drop-zone').classList.remove('drag-shooting');
             if (e.dataTransfer.files.length > 0) {
-                simulateFileLoad(e.dataTransfer.files[0].name);
+                processBasketballUpload(e.dataTransfer.files[0].name);
             }
         }
         function handleFileChosen(e) {
             if (e.target.files.length > 0) {
-                simulateFileLoad(e.target.files[0].name);
+                processBasketballUpload(e.target.files[0].name);
             }
         }
-        function simulateFileLoad(fileName) {
-            const box = document.getElementById('upload-box');
-            const nameLabel = document.getElementById('file-name-label');
-            const statusLabel = document.getElementById('upload-status-label');
-            const bar = document.getElementById('upload-bar');
+        function processBasketballUpload(fileName) {
+            const resultCard = document.getElementById('upload-result-card');
+            const resultName = document.getElementById('result-filename');
+            const badgeCount = document.getElementById('badge-upload-count');
 
-            box.classList.remove('hidden');
-            nameLabel.innerText = fileName;
-            bar.style.width = '0%';
-            statusLabel.innerText = '0%';
-
-            let percent = 0;
-            const timer = setInterval(() => {
-                percent += 20;
-                bar.style.width = percent + '%';
-                statusLabel.innerText = percent + '%';
-                if (percent >= 100) {
-                    clearInterval(timer);
-                    statusLabel.innerText = 'Selesai ✓';
-                }
-            }, 80);
+            resultName.innerText = fileName;
+            resultCard.classList.remove('hidden');
+            badgeCount.innerText = 'Uploaded: 1';
         }
 
+        // GLASSY AUTH MODAL (Sesuai Video 3)
+        function openGlassyAuthModal() {
+            document.getElementById('modal-auth').classList.remove('hidden');
+        }
+        function closeGlassyAuthModal() {
+            document.getElementById('modal-auth').classList.add('hidden');
+        }
+        function toggleAuthMode(mode) {
+            const formIn = document.getElementById('form-signin');
+            const formUp = document.getElementById('form-signup');
+            const title = document.getElementById('auth-title');
+            const sub = document.getElementById('auth-subtitle');
+
+            if(mode === 'signup') {
+                formIn.classList.add('hidden');
+                formUp.classList.remove('hidden');
+                title.innerText = 'Create Account';
+                sub.innerText = 'Daftarkan data pegawai baru ke sistem';
+            } else {
+                formUp.classList.add('hidden');
+                formIn.classList.remove('hidden');
+                title.innerText = 'Welcome Back!';
+                sub.innerText = 'Masuk dengan identitas pegawai Anda';
+            }
+        }
+        function handleAuthSubmit(e, action) {
+            e.preventDefault();
+            if(action === 'login') {
+                const user = document.getElementById('auth-login-user').value;
+                document.getElementById('profile-name').innerText = user;
+                alert('Berhasil masuk sebagai: ' + user);
+            } else {
+                alert('Akun berhasil didaftarkan! Silakan masuk.');
+                toggleAuthMode('signin');
+                return;
+            }
+            closeGlassyAuthModal();
+        }
+
+        // FORM SUBMIT DOKUMEN BARU
         function handleSubmitNewDocument(e) {
             e.preventDefault();
             const docNum = document.getElementById('doc-number-input').value;
@@ -889,7 +1013,7 @@
             `;
             auditBody.insertAdjacentHTML('afterbegin', auditRow);
 
-            alert(`Dokumen ${docNum} berhasil didaftarkan dan segera dikirim ke ${recipient}.`);
+            alert(`Dokumen ${docNum} berhasil didaftarkan dan dikirim ke ${recipient}.`);
             switchTab('dashboard');
         }
 
