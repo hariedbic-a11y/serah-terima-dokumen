@@ -10,12 +10,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -48,7 +46,6 @@
             color: #f1f5f9;
         }
 
-        /* Glassmorphism Styles (Sesuai Video 1 & 3) */
         .glass-panel {
             background: rgba(22, 28, 45, 0.75);
             backdrop-filter: blur(20px);
@@ -80,19 +77,16 @@
             box-shadow: 0 0 16px rgba(255, 107, 74, 0.25);
         }
 
-        /* Basketball Basket Animation (Sesuai Video 2) */
-        .basket-hoop {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .drag-shooting .basket-ball {
-            transform: translateY(35px) scale(0.85);
-            opacity: 1;
-        }
-        .drag-shooting .basket-hoop {
-            transform: scale(1.1);
-        }
+        /* Basketball Dropzone Animation (Video 2) */
+        .basket-hoop { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .drag-shooting .basket-ball { transform: translateY(32px) scale(0.85); opacity: 1; }
+        .drag-shooting .basket-hoop { transform: scale(1.1); }
 
-        /* Print Format */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 107, 74, 0.5); }
+
         @media print {
             body { background: #ffffff !important; color: #000000 !important; }
             aside, header, nav, #btn-print-action, #search-box-audit, .no-print { display: none !important; }
@@ -106,17 +100,17 @@
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden antialiased">
 
-    <!-- DESKTOP SIDEBAR -->
+    <!-- DESKTOP FLOATING SIDEBAR -->
     <aside class="hidden md:flex flex-col w-72 glass-panel m-3.5 rounded-3xl p-5 justify-between shadow-2xl z-20 shrink-0">
         <div>
-            <!-- Banner Logo PHS & RPI Berdampingan (Proporsi Akurat) -->
+            <!-- Banner Logo Proporsional -->
             <div class="pb-5 border-b border-white/5">
                 <div class="w-full h-16 bg-white p-2 rounded-2xl flex items-center justify-center shadow-md">
                     <img src="icon.svg" alt="PT Permata Husada Sakti - RS Grha Permata Ibu" class="w-full h-full object-contain">
                 </div>
             </div>
 
-            <!-- Navigasi Menu Lengkap -->
+            <!-- Navigasi Menu -->
             <div class="mt-5 space-y-1">
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Navigasi Utama</p>
                 
@@ -133,7 +127,7 @@
                 <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">
                     <i class="fa-solid fa-signature text-sm"></i>
                     <span>Tugas & Verifikasi</span>
-                    <span id="badge-tasks" class="ml-auto text-[10px] bg-brand-orange text-white font-bold px-2 py-0.5 rounded-full">1</span>
+                    <span id="badge-tasks" class="ml-auto text-[10px] bg-brand-orange text-white font-bold px-2 py-0.5 rounded-full">0</span>
                 </button>
 
                 <button onclick="switchTab('disposition')" id="nav-disposition" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">
@@ -163,7 +157,7 @@
             </div>
         </div>
 
-        <!-- Tombol Beralih Login / Akun (Sesuai Video 3) -->
+        <!-- Glassy Auth Switcher (Video 3) -->
         <div class="pt-3 border-t border-white/5">
             <div class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/5">
                 <div class="flex items-center gap-2.5 overflow-hidden">
@@ -172,7 +166,7 @@
                     </div>
                     <div class="overflow-hidden">
                         <p class="text-xs font-bold text-white truncate" id="profile-name">Hari Santoso, S. Sos</p>
-                        <p class="text-[10px] text-gray-400 truncate">Kepala Pengawas</p>
+                        <p class="text-[10px] text-gray-400 truncate">Kepala Pengawas Berkas</p>
                     </div>
                 </div>
                 <button onclick="openGlassyAuthModal()" title="Ganti User / Login" class="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition">
@@ -182,7 +176,7 @@
         </div>
     </aside>
 
-    <!-- MOBILE TOPBAR DENGAN LOGO BANNER LENGKAP -->
+    <!-- MOBILE TOPBAR -->
     <header class="md:hidden flex items-center justify-between px-4 py-2.5 glass-panel border-b border-white/5 z-20">
         <div class="h-10 w-56 bg-white px-2 py-1 rounded-xl flex items-center justify-center shadow">
             <img src="icon.svg" alt="Logo PHS RPI" class="w-full h-full object-contain">
@@ -192,7 +186,7 @@
         </button>
     </header>
 
-    <!-- MAIN SCROLLABLE CONTAINER (Video 1 Style Dashboard) -->
+    <!-- MAIN SCROLLABLE CONTENT -->
     <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6 space-y-6">
 
         <!-- 1. DASHBOARD -->
@@ -205,26 +199,30 @@
                             Anti-Berkas Hilang
                         </span>
                         <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                            Terverifikasi Digital
+                            Sinkron Google Sheets & Drive
                         </span>
                     </div>
                     <h2 class="text-xl md:text-2xl font-bold text-white mt-2">Kontrol Penyerahan Berkas Penting</h2>
                     <p class="text-xs text-gray-400 mt-1 max-w-lg">PT Permata Husada Sakti & RS Grha Permata Ibu: pencatatan waktu nyata, bukti penerimaan, dan tanda tangan digital.</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="switchTab('create')" class="flex-1 md:flex-none px-4 py-3 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/25 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <button onclick="loadDocumentsFromSheets()" class="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>Refresh Data</span>
+                    </button>
+                    <button onclick="switchTab('create')" class="px-4 py-3 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/25 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
                         <i class="fa-solid fa-plus-circle"></i>
                         <span>+ Serah Terima Baru</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Kartu Status Metrik Melayang -->
+            <!-- Indikator Metrik (Video 1) -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Sedang Proses</p>
-                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-progress">1</p>
+                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-progress">0</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-sm">
                         <i class="fa-solid fa-hourglass-half"></i>
@@ -233,8 +231,8 @@
 
                 <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-medium text-gray-400">Perlu Revisi / Catatan</p>
-                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-revision">1</p>
+                        <p class="text-[11px] font-medium text-gray-400">Perlu Revisi</p>
+                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-revision">0</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-sm">
                         <i class="fa-solid fa-pen-ruler"></i>
@@ -244,7 +242,7 @@
                 <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Selesai & Sah</p>
-                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-completed">3</p>
+                        <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-completed">0</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
                         <i class="fa-solid fa-circle-check"></i>
@@ -253,11 +251,11 @@
 
                 <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-medium text-gray-400">Prioritas Segera</p>
-                        <p class="text-xl md:text-2xl font-bold text-brand-orange mt-0.5">2</p>
+                        <p class="text-[11px] font-medium text-gray-400">Total Terdaftar</p>
+                        <p class="text-xl md:text-2xl font-bold text-brand-orange mt-0.5" id="metric-total">0</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 text-brand-orange flex items-center justify-center text-sm">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <i class="fa-solid fa-folder-closed"></i>
                     </div>
                 </div>
             </div>
@@ -267,7 +265,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <div>
                         <h3 class="text-sm font-bold text-white">Status Penyerahan Berkas Berjalan</h3>
-                        <p class="text-[11px] text-gray-400">Lacak lokasi dan penerima dokumen saat ini.</p>
+                        <p class="text-[11px] text-gray-400">Tersimpan permanen di Google Sheets & Drive.</p>
                     </div>
                     <div class="flex items-center gap-2 w-full md:w-auto">
                         <input type="text" id="search-doc" onkeyup="filterDocTable()" placeholder="Cari No Dokumen / Penerima..." class="w-full md:w-56 p-2 rounded-xl glass-input text-xs">
@@ -286,66 +284,19 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/[0.04]" id="docs-tbody">
-                            <tr class="hover:bg-white/[0.02] transition">
-                                <td class="py-3.5 px-2">
-                                    <p class="font-bold text-white">PHS/FIN/2026/089</p>
-                                    <p class="text-[10px] text-gray-400">Faktur Tagihan Alkes Hemodialisa</p>
-                                </td>
-                                <td class="py-3.5 px-2">
-                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                                        Urgent (Sangat Segera)
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-2 text-gray-300">
-                                    Hari Santoso ➔ Budi Pratama (Finance)
-                                </td>
-                                <td class="py-3.5 px-2">
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                        In Progress
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-2 text-right">
-                                    <button onclick="switchTab('tasks')" class="px-3 py-1.5 rounded-xl bg-brand-orange text-white font-semibold text-[11px] shadow-sm hover:brightness-110 transition">
-                                        Periksa Berkas
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-white/[0.02] transition">
-                                <td class="py-3.5 px-2">
-                                    <p class="font-bold text-white">PHS/LEG/2026/041</p>
-                                    <p class="text-[10px] text-gray-400">Kontrak Kerjasama Vendor Kebersihan</p>
-                                </td>
-                                <td class="py-3.5 px-2">
-                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                        Normal
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-2 text-gray-300">
-                                    Siti Rahma ➔ Hari Santoso (Direksi)
-                                </td>
-                                <td class="py-3.5 px-2">
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                        Perlu Revisi
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-2 text-right">
-                                    <button onclick="viewRevisionNote('PHS/LEG/2026/041', 'Koreksi pasal 7 tentang tenggat waktu denda belum tertera jelas.')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-amber-400 font-semibold text-[11px] border border-white/10 transition">
-                                        Lihat Catatan
-                                    </button>
-                                </td>
-                            </tr>
+                            <tr><td colspan="5" class="py-6 text-center text-gray-400">Memuat data dari Google Sheets...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- 2. BUAT SERAH TERIMA (DENGAN ANIMASI BASKETBALL UPLOAD DARI VIDEO 2) -->
+        <!-- 2. BUAT SERAH TERIMA BARU (BASKETBALL ANIMATION UPLOAD) -->
         <section id="view-create" class="hidden max-w-2xl mx-auto space-y-6">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-xl font-bold text-white">Buat Serah Terima Dokumen Baru</h2>
-                    <p class="text-xs text-gray-400">Catat nomor berkas, penerima, dan lokasi fisik arsip.</p>
+                    <p class="text-xs text-gray-400">Otomatis tersimpan ke Google Sheets & file di Google Drive.</p>
                 </div>
                 <button onclick="switchTab('dashboard')" class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-xl border border-white/10">
                     Batal
@@ -404,10 +355,10 @@
                     <textarea id="doc-description" rows="2" required placeholder="Tuliskan isi berkas yang diserahterimakan..." class="w-full p-3 rounded-2xl glass-input text-xs"></textarea>
                 </div>
 
-                <!-- BASKETBALL UPLOAD ANIMATION (Persis Sesuai Video Referensi 2) -->
+                <!-- BASKETBALL UPLOAD ANIMATION (Video 2) -->
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
-                        <label class="text-xs font-bold text-gray-300">Upload Files & Attachment</label>
+                        <label class="text-xs font-bold text-gray-300">Upload Berkas ke Google Drive</label>
                         <span id="badge-upload-count" class="text-[10px] bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-semibold">Uploaded: 0</span>
                     </div>
 
@@ -420,12 +371,10 @@
                         
                         <input type="file" id="hidden-file-input" class="hidden" onchange="handleFileChosen(event)">
 
-                        <!-- Bola Basket Meluncur Masuk Ring -->
                         <div class="w-16 h-20 flex flex-col items-center justify-between mb-2 pointer-events-none">
                             <div class="basket-ball w-6 h-6 rounded-full bg-gradient-to-tr from-amber-600 to-brand-orange shadow-md border border-amber-300/40 flex items-center justify-center transition-all duration-300">
                                 <span class="text-[8px] text-white font-black">🏀</span>
                             </div>
-                            <!-- Ring Basket -->
                             <div class="basket-hoop w-12 h-8 border-2 border-indigo-400/80 border-t-0 rounded-b-xl relative flex items-center justify-center bg-indigo-500/5">
                                 <div class="w-10 h-0.5 bg-indigo-400/80 absolute top-0"></div>
                                 <div class="w-6 h-4 border-l border-r border-indigo-300/40 opacity-70"></div>
@@ -436,190 +385,117 @@
                         <p class="text-[10px] text-indigo-300/70 mt-0.5">Aim the file & release to shoot into the basket!</p>
                     </div>
 
-                    <!-- Kartu Berkas Uploaded Selesai (Sesuai Video 2) -->
                     <div id="upload-result-card" class="hidden mt-3 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-between">
                         <div class="flex items-center gap-3 overflow-hidden">
                             <div class="px-2 py-1 bg-rose-500/20 text-rose-400 text-[10px] font-black rounded-md border border-rose-500/30">
-                                PDF
+                                DOC
                             </div>
                             <div class="overflow-hidden">
-                                <p id="result-filename" class="text-xs font-bold text-white truncate max-w-[200px]">document.pdf</p>
+                                <p id="result-filename" class="text-xs font-bold text-white truncate max-w-[200px]">file.pdf</p>
                                 <p class="text-[10px] text-emerald-400 flex items-center gap-1 font-semibold">
-                                    <i class="fa-solid fa-check"></i> File uploaded successfully
+                                    <i class="fa-solid fa-check"></i> Siap diunggah ke Google Drive
                                 </p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">Done</span>
-                            <p class="text-[9px] text-gray-400 mt-1">2.4 MB</p>
+                            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">Ready</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 active:scale-98 transition-all">
-                        Simpan & Kirim Serah Terima
+                    <button type="submit" id="btn-submit-doc" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2">
+                        <span>Simpan & Kirim Serah Terima</span>
                     </button>
                 </div>
             </form>
         </section>
 
-        <!-- 3. TUGAS MASUK (VERIFIKASI, CORETAN REVISI & TTD DIGITAL) -->
+        <!-- 3. TUGAS & TANDA TANGAN DIGITAL -->
         <section id="view-tasks" class="hidden max-w-2xl mx-auto space-y-4">
             <div>
                 <h2 class="text-xl font-bold text-white">Tugas Pemeriksaan & Tanda Terima</h2>
-                <p class="text-xs text-gray-400">Penerima dapat memeriksa berkas, memberi catatan koreksi, atau menandatangani penerimaan.</p>
+                <p class="text-xs text-gray-400">Verifikasi berkas, masukkan catatan perbaikan, atau tandatangani penerimaan.</p>
             </div>
-
-            <div class="glass-panel p-5 rounded-3xl space-y-4 border-l-4 border-l-brand-orange">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <span class="text-[10px] font-bold text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded-md border border-brand-orange/20">
-                            Menunggu Tindakan Anda
-                        </span>
-                        <h4 class="text-sm font-bold text-white mt-1.5">PHS/FIN/2026/089 - Faktur Tagihan Alkes Hemodialisa</h4>
-                        <p class="text-xs text-gray-400">Pengirim: Hari Santoso, S. Sos • Divisi Keuangan</p>
-                    </div>
-                    <span class="text-[10px] text-gray-500">10 Okt 2026</span>
-                </div>
-
-                <div class="bg-black/30 p-3 rounded-2xl border border-white/5 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <i class="fa-solid fa-file-pdf text-rose-500 text-lg"></i>
-                        <div>
-                            <p class="text-xs font-semibold text-white">lampiran_faktur_alkes.pdf</p>
-                            <p class="text-[10px] text-gray-400">1.8 MB • Siap ditinjau</p>
-                        </div>
-                    </div>
-                    <button onclick="alert('Membuka pratinjau berkas lampiran...')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white">
-                        <i class="fa-solid fa-eye"></i> Lihat Berkas
-                    </button>
-                </div>
-
-                <div class="flex gap-2 justify-end pt-2">
-                    <button onclick="promptRevision('PHS/FIN/2026/089')" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-amber-400 font-semibold text-xs border border-white/10 transition">
-                        <i class="fa-solid fa-pencil"></i> Kembalikan untuk Revisi
-                    </button>
-                    <button onclick="openSignatureModal('PHS/FIN/2026/089')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-signature"></i>
-                        <span>Tanda Tangani & Selesaikan</span>
-                    </button>
-                </div>
+            <div id="tasks-container" class="space-y-4">
+                <p class="text-xs text-gray-400">Tidak ada dokumen yang menunggu verifikasi Anda saat ini.</p>
             </div>
         </section>
 
-        <!-- 4. MENU DISPOSISI & INSTRUKSI PEJABAT -->
+        <!-- 4. LEMBAR DISPOSISI -->
         <section id="view-disposition" class="hidden max-w-3xl mx-auto space-y-4">
             <div>
-                <h2 class="text-xl font-bold text-white">Lembar Disposisi & Instruksi</h2>
-                <p class="text-xs text-gray-400">Instruksi langsung pimpinan untuk penanganan dokumen berjenjang.</p>
+                <h2 class="text-xl font-bold text-white">Lembar Disposisi & Instruksi Pimpinan</h2>
+                <p class="text-xs text-gray-400">Instruksi langsung berjenjang PT Permata Husada Sakti.</p>
             </div>
-
             <div class="glass-panel p-5 rounded-3xl space-y-4">
-                <div class="border-b border-white/5 pb-3 flex justify-between items-center">
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Dokumen: PHS/LEG/2026/041 (Kontrak Vendor)</h4>
-                        <p class="text-[10px] text-gray-400">Dari: Direktur Utama ➔ Ditujukan: Bagian Legal</p>
-                    </div>
-                    <span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-semibold">Telah Didisposisikan</span>
+                <div class="border-b border-white/5 pb-3">
+                    <h4 class="text-xs font-bold text-white">Instruksi Arahan Terintegrasi</h4>
+                    <p class="text-[10px] text-gray-400">Dokumen penting dapat didisposisikan langsung kepada kepala unit / wadir operasional.</p>
                 </div>
-
-                <div class="space-y-2">
-                    <p class="text-xs font-semibold text-gray-300">Instruksi Pimpinan:</p>
-                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-300">
-                        <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5">
-                            <input type="checkbox" checked disabled class="accent-brand-orange"> Untuk Diteliti & Dilaporkan
-                        </label>
-                        <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5">
-                            <input type="checkbox" checked disabled class="accent-brand-orange"> Siapkan Draft Perjanjian
-                        </label>
-                    </div>
-                </div>
-
-                <div class="p-3 rounded-2xl bg-black/30 border border-white/5 text-xs text-gray-300">
-                    <p class="text-[10px] text-gray-400 font-semibold mb-1">Catatan Tambahan Direksi:</p>
-                    "Pastikan klausul perlindungan data rekam medis pasien RS Grha Permata Ibu dicantumkan tegas di pasal 12."
+                <div class="grid grid-cols-2 gap-2 text-xs text-gray-300">
+                    <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5"><input type="checkbox" checked disabled class="accent-brand-orange"> Untuk Diteliti & Dilaporkan</label>
+                    <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5"><input type="checkbox" checked disabled class="accent-brand-orange"> Siapkan Draft Perjanjian</label>
                 </div>
             </div>
         </section>
 
-        <!-- 5. MENU EKSPEDISI FISIK -->
+        <!-- 5. BUKU EKSPEDISI FISIK -->
         <section id="view-expedition" class="hidden max-w-4xl mx-auto space-y-4">
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-xl font-bold text-white">Buku Ekspedisi Fisik</h2>
-                    <p class="text-xs text-gray-400">Catatan pengantar berkas fisik antar unit kerja dan kurir internal.</p>
+                    <p class="text-xs text-gray-400">Catatan kurir & pengantar berkas fisik rumah sakit.</p>
                 </div>
-                <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white flex items-center gap-2">
+                <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white">
                     <i class="fa-solid fa-print"></i> Cetak Lembar Ekspedisi
                 </button>
             </div>
-
             <div class="glass-panel p-5 rounded-3xl overflow-hidden">
-                <table class="w-full text-left text-xs text-gray-300">
+                <table class="w-full text-left text-xs text-gray-300" id="expedition-table">
                     <thead class="text-[10px] text-gray-400 uppercase border-b border-white/5 pb-2">
                         <tr>
                             <th class="py-2.5">No. Dokumen</th>
                             <th class="py-2.5">Tujuan Unit</th>
-                            <th class="py-2.5">Kurir Pengantar</th>
-                            <th class="py-2.5">Jam Keluar</th>
-                            <th class="py-2.5">Paraf Fisik</th>
+                            <th class="py-2.5">Kurir</th>
+                            <th class="py-2.5">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/[0.04]">
-                        <tr>
-                            <td class="py-3 font-semibold text-white">PHS/FIN/2026/089</td>
-                            <td class="py-3">Keuangan (Gedung A)</td>
-                            <td class="py-3">Ahmad (Internal)</td>
-                            <td class="py-3 text-gray-400">14:10 WIB</td>
-                            <td class="py-3"><span class="text-emerald-400 font-bold">✓ Diterima</span></td>
-                        </tr>
+                    <tbody class="divide-y divide-white/[0.04]" id="expedition-tbody">
+                        <tr><td colspan="4" class="py-4 text-center text-gray-400">Memuat ekspedisi...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- 6. MENU LEMARI & RAK ARSIP -->
+        <!-- 6. LEMARI & RAK ARSIP -->
         <section id="view-filing" class="hidden max-w-4xl mx-auto space-y-4">
             <div>
                 <h2 class="text-xl font-bold text-white">Penyimpanan & Retensi Arsip</h2>
-                <p class="text-xs text-gray-400">Lacak letak fisik dokumen asli di lemari, rak, atau box arsip.</p>
+                <p class="text-xs text-gray-400">Lokasi fisik berkas asli agar tidak hilang atau terselip.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="filing-container">
                 <div class="glass-card p-4 rounded-3xl space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-white">Lemari Arsip A (Keuangan)</span>
-                        <i class="fa-solid fa-folder text-amber-400"></i>
-                    </div>
-                    <p class="text-[11px] text-gray-400">Total: 48 Dokumen Asli</p>
-                    <p class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded w-fit">Kondisi: Terkunci & Aman</p>
+                    <span class="text-xs font-bold text-white">Lemari Arsip A (Keuangan)</span>
+                    <p class="text-[11px] text-gray-400">Folder Merah • Terkunci</p>
                 </div>
                 <div class="glass-card p-4 rounded-3xl space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-white">Lemari Arsip B (Legal)</span>
-                        <i class="fa-solid fa-folder text-blue-400"></i>
-                    </div>
-                    <p class="text-[11px] text-gray-400">Total: 31 Dokumen Asli</p>
-                    <p class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded w-fit">Kondisi: Terkunci & Aman</p>
+                    <span class="text-xs font-bold text-white">Lemari Arsip B (Legal)</span>
+                    <p class="text-[11px] text-gray-400">Folder Biru • Terkunci</p>
                 </div>
                 <div class="glass-card p-4 rounded-3xl space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-white">Lemari Arsip C (Medis)</span>
-                        <i class="fa-solid fa-folder text-emerald-400"></i>
-                    </div>
-                    <p class="text-[11px] text-gray-400">Total: 120 Dokumen Asli</p>
-                    <p class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded w-fit">Kondisi: Terkunci & Aman</p>
+                    <span class="text-xs font-bold text-white">Lemari Arsip C (Medis)</span>
+                    <p class="text-[11px] text-gray-400">Folder Hijau • Terkunci</p>
                 </div>
             </div>
         </section>
 
-        <!-- 7. JEJAK AUDIT & TARIK LAPORAN (KOP RESMI DENGAN ICON.SVG) -->
+        <!-- 7. JEJAK AUDIT & TARIK LAPORAN (KOP RESMI SIAP CETAK) -->
         <section id="view-audit" class="space-y-4 hidden">
             <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 no-print">
                 <div>
                     <h2 class="text-xl font-bold text-white">Jejak Audit & Laporan Serah Terima</h2>
-                    <p class="text-xs text-gray-400">Catatan kronologis setiap tindakan serah terima berkas.</p>
+                    <p class="text-xs text-gray-400">Rekam jejak tidak dapat dimanipulasi di Google Sheets.</p>
                 </div>
                 <button onclick="window.print()" class="self-start md:self-auto px-4 py-2.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-brand-orange/25">
                     <i class="fa-solid fa-print"></i>
@@ -627,9 +503,7 @@
                 </button>
             </div>
 
-            <!-- CONTAINER BERITA ACARA RESMI CETAK -->
             <div class="glass-panel p-6 rounded-3xl" id="print-area">
-                
                 <!-- KOP RESMI DUA LOGO BERDAMPINGAN -->
                 <div class="border-b-2 border-slate-700 pb-4 mb-4 flex items-center justify-between">
                     <div class="flex items-center gap-4">
@@ -639,7 +513,6 @@
                     </div>
                     <div class="text-right text-[11px] text-gray-400">
                         <p class="font-bold text-white">BERITA ACARA SERAH TERIMA</p>
-                        <p>Tanggal Cetak: <span class="font-semibold text-white">10 Oktober 2026</span></p>
                         <p>Status Audit: <span class="text-emerald-400 font-bold">Terverifikasi Digital</span></p>
                     </div>
                 </div>
@@ -652,31 +525,11 @@
                                 <th class="py-3 px-2">No. Berkas</th>
                                 <th class="py-3 px-2">Pelaksana / User</th>
                                 <th class="py-3 px-2">Tindakan</th>
-                                <th class="py-3 px-2">Catatan / Coretan Digital</th>
+                                <th class="py-3 px-2">Catatan Digital</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/[0.04]" id="audit-tbody">
-                            <tr>
-                                <td class="py-3 px-2 text-gray-400">10 Okt 2026, 14:15 WIB</td>
-                                <td class="py-3 px-2 font-bold text-white">PHS/FIN/2026/089</td>
-                                <td class="py-3 px-2">Hari Santoso</td>
-                                <td class="py-3 px-2"><span class="text-blue-400 font-bold">Penyerahan Dikirim</span></td>
-                                <td class="py-3 px-2 text-gray-400">Berkas faktur fisik diantarkan ke meja Budi</td>
-                            </tr>
-                            <tr>
-                                <td class="py-3 px-2 text-gray-400">10 Okt 2026, 11:30 WIB</td>
-                                <td class="py-3 px-2 font-bold text-white">PHS/LEG/2026/041</td>
-                                <td class="py-3 px-2">Hari Santoso</td>
-                                <td class="py-3 px-2"><span class="text-amber-400 font-bold">Minta Revisi</span></td>
-                                <td class="py-3 px-2 text-gray-400">Koreksi pasal 7 mengenai tenggat waktu denda</td>
-                            </tr>
-                            <tr>
-                                <td class="py-3 px-2 text-gray-400">09 Okt 2026, 16:00 WIB</td>
-                                <td class="py-3 px-2 font-bold text-white">PHS/MED/2026/012</td>
-                                <td class="py-3 px-2">Dr. Hendra</td>
-                                <td class="py-3 px-2"><span class="text-emerald-400 font-bold">Tanda Tangan & Selesai</span></td>
-                                <td class="py-3 px-2 text-gray-400">Arsip rekam medis resmi masuk kabinet berkas</td>
-                            </tr>
+                            <tr><td colspan="5" class="py-4 text-center text-gray-400">Memuat log audit...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -692,8 +545,8 @@
                     <div class="text-center w-48">
                         <p>Pihak Yang Menerima,</p>
                         <div class="h-16"></div>
-                        <p class="font-bold underline">( Budi Pratama )</p>
-                        <p class="text-[10px] text-gray-600">Bagian Finance / Penerima</p>
+                        <p class="font-bold underline">( Petugas Penerima )</p>
+                        <p class="text-[10px] text-gray-600">Unit / Bagian Penerima</p>
                     </div>
                 </div>
             </div>
@@ -703,58 +556,23 @@
         <section id="view-users" class="hidden space-y-6">
             <div>
                 <h2 class="text-xl font-bold text-white">Kelola Akun & Hak Akses</h2>
-                <p class="text-xs text-gray-400">Atur pengguna yang berhak menyerahkan dan menerima dokumen.</p>
+                <p class="text-xs text-gray-400">Daftar staf yang berhak menyerahkan dan menerima dokumen.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <form onsubmit="handleNewUser(event)" class="glass-panel p-5 rounded-3xl space-y-3">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tambah User</h3>
-                    <div>
-                        <label class="block text-[11px] text-gray-400 mb-1">NIK Karyawan</label>
-                        <input type="text" id="user-nik" required placeholder="Contoh: PHS-108" class="w-full p-2.5 rounded-xl glass-input text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-gray-400 mb-1">Nama Lengkap</label>
-                        <input type="text" id="user-name" required placeholder="Nama staf..." class="w-full p-2.5 rounded-xl glass-input text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-gray-400 mb-1">Role / Divisi</label>
-                        <input type="text" id="user-role" required placeholder="Contoh: Staf Keuangan" class="w-full p-2.5 rounded-xl glass-input text-xs">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs mt-2 shadow-md">
-                        Tambah Staf
-                    </button>
-                </form>
-
-                <div class="md:col-span-2 glass-panel p-5 rounded-3xl">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Daftar Pengguna Aktif</h3>
-                    <table class="w-full text-left text-xs">
-                        <thead class="text-[10px] text-gray-400 uppercase border-b border-white/5 pb-2">
-                            <tr>
-                                <th class="py-2.5">NIK</th>
-                                <th class="py-2.5">Nama</th>
-                                <th class="py-2.5">Divisi / Jabatan</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/[0.04]">
-                            <tr>
-                                <td class="py-2.5 font-mono text-gray-400">PHS-001</td>
-                                <td class="py-2.5 font-bold text-white">Hari Santoso, S. Sos</td>
-                                <td class="py-2.5 text-gray-300">Admin Utama / Pengawas Berkas</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2.5 font-mono text-gray-400">PHS-002</td>
-                                <td class="py-2.5 font-bold text-white">Budi Pratama</td>
-                                <td class="py-2.5 text-gray-300">Staf Keuangan</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2.5 font-mono text-gray-400">PHS-003</td>
-                                <td class="py-2.5 font-bold text-white">Siti Rahma, SH</td>
-                                <td class="py-2.5 text-gray-300">Staf Legal & Kemitraan</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="glass-panel p-5 rounded-3xl">
+                <table class="w-full text-left text-xs">
+                    <thead class="text-[10px] text-gray-400 uppercase border-b border-white/5 pb-2">
+                        <tr>
+                            <th class="py-2.5">NIK</th>
+                            <th class="py-2.5">Nama</th>
+                            <th class="py-2.5">Divisi / Jabatan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/[0.04]">
+                        <tr><td class="py-2.5 font-mono text-gray-400">2026001</td><td class="py-2.5 font-bold text-white">Hari Santoso, S. Sos</td><td class="py-2.5 text-gray-300">Admin / Pengawas Berkas</td></tr>
+                        <tr><td class="py-2.5 font-mono text-gray-400">2026002</td><td class="py-2.5 font-bold text-white">Budi Pratama</td><td class="py-2.5 text-gray-300">Staff Keuangan</td></tr>
+                        <tr><td class="py-2.5 font-mono text-gray-400">2026003</td><td class="py-2.5 font-bold text-white">Siti Rahma, SH</td><td class="py-2.5 text-gray-300">Staff Legal</td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -773,7 +591,7 @@
         <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white text-xs relative">
             <i class="fa-solid fa-signature text-sm"></i>
             <span class="text-[8px]">Tugas</span>
-            <span class="absolute 0 right-1 w-2 h-2 rounded-full bg-brand-orange"></span>
+            <span id="badge-tasks-mobile" class="absolute 0 right-1 w-2 h-2 rounded-full bg-brand-orange hidden"></span>
         </button>
         <button onclick="switchTab('disposition')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white text-xs">
             <i class="fa-solid fa-diagram-project text-sm"></i>
@@ -785,90 +603,63 @@
         </button>
     </nav>
 
-    <!-- MODAL POPUP 1: GLASSY AUTHENTICATION / LOGIN V2 (PERSIS VIDEO REFERENSI 3) -->
+    <!-- MODAL AUTHENTICATION (Video 3) -->
     <div id="modal-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-panel p-8 rounded-3xl max-w-md w-full border border-white/15 relative overflow-hidden shadow-2xl">
-            <!-- Glass Switcher Header -->
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
                 <div>
-                    <h3 id="auth-title" class="text-base font-bold text-white">Welcome Back!</h3>
-                    <p id="auth-subtitle" class="text-[11px] text-gray-400">Masuk dengan identitas pegawai Anda</p>
+                    <h3 class="text-base font-bold text-white">Login Petugas</h3>
+                    <p class="text-[11px] text-gray-400">Masuk dengan NIK & Password Anda</p>
                 </div>
                 <button onclick="closeGlassyAuthModal()" class="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
-
-            <!-- Form Mode: Sign In -->
-            <form id="form-signin" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">NIK / Username</label>
-                    <input type="text" id="auth-login-user" required placeholder="Contoh: PHS-001" class="w-full p-3 rounded-2xl glass-input text-xs">
+                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">NIK Pegawai</label>
+                    <input type="text" id="auth-nik" required placeholder="Contoh: 2026001" class="w-full p-3 rounded-2xl glass-input text-xs">
                 </div>
                 <div>
                     <label class="block text-[11px] font-semibold text-gray-300 mb-1">Password</label>
-                    <input type="password" id="auth-login-pass" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
+                    <input type="password" id="auth-pass" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
                 </div>
                 <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 transition">
-                    Sign In
+                    Masuk ke Sistem
                 </button>
-                <div class="text-center pt-2">
-                    <button type="button" onclick="toggleAuthMode('signup')" class="text-[11px] text-gray-400 hover:text-white">
-                        Belum punya akun? <span class="text-brand-orange font-semibold underline">Daftar Akun Baru</span>
-                    </button>
-                </div>
-            </form>
-
-            <!-- Form Mode: Sign Up (Hidden di Awal) -->
-            <form id="form-signup" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Nama Lengkap</label>
-                    <input type="text" required placeholder="Nama Anda" class="w-full p-3 rounded-2xl glass-input text-xs">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Email / NIK</label>
-                    <input type="text" required placeholder="PHS-109 / nama@phs.co.id" class="w-full p-3 rounded-2xl glass-input text-xs">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-gray-300 mb-1">Buat Password</label>
-                    <input type="password" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
-                </div>
-                <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 hover:brightness-110 transition">
-                    Create Account
-                </button>
-                <div class="text-center pt-2">
-                    <button type="button" onclick="toggleAuthMode('signin')" class="text-[11px] text-gray-400 hover:text-white">
-                        Sudah punya akun? <span class="text-brand-orange font-semibold underline">Sign In Di Sini</span>
-                    </button>
-                </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL POPUP 2: TANDA TANGAN DIGITAL (CANVAS) -->
+    <!-- MODAL TANDA TANGAN CANVAS -->
     <div id="modal-signature" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="glass-panel p-6 rounded-3xl max-w-sm w-full space-y-4 border border-white/15">
             <div class="flex justify-between items-center">
                 <h3 class="text-sm font-bold text-white">Tanda Tangan Digital Penerima</h3>
                 <button onclick="closeSignatureModal()" class="text-gray-400 hover:text-white text-xs">✕</button>
             </div>
-            <p class="text-[11px] text-gray-400">Goreskan jari (HP) atau kursor mouse (PC) pada kotak putih di bawah untuk menandatangani penerimaan berkas.</p>
-            
+            <p class="text-[11px] text-gray-400">Goreskan jari (di HP) atau kursor (di PC) untuk menandatangani bukti penyerahan berkas ini.</p>
             <div class="bg-white rounded-2xl p-1">
                 <canvas id="signature-canvas" width="300" height="150" class="w-full bg-slate-50 rounded-xl cursor-crosshair touch-none"></canvas>
             </div>
-
             <div class="flex gap-2">
                 <button onclick="clearSignatureCanvas()" class="w-1/3 py-2 text-xs rounded-xl bg-white/10 text-gray-300 font-semibold hover:bg-white/20">
                     Hapus
                 </button>
-                <button onclick="saveSignatureAndComplete()" class="w-2/3 py-2 text-xs rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md">
+                <button onclick="saveSignatureAndComplete()" id="btn-save-signature" class="w-2/3 py-2 text-xs rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md">
                     Konfirmasi & Sahkan
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC & GOOGLE APPS SCRIPT SYNC -->
     <script>
+        // TAUTAN GOOGLE APPS SCRIPT WEBAPP ANDA SUDAH TERTANAM LANGSUNG:
+        const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbwQdW5uPGHN9nN0bYVenxYtHGvRSb2-qmn-6Lqouysdwqo2BJ8UOJnMc4lr5-RsWXFt/exec";
+
+        let currentUploadedFile = null;
+        let selectedDocForSign = null;
+        let globalDocuments = [];
+
         function switchTab(tabId) {
             ['dashboard', 'create', 'tasks', 'disposition', 'expedition', 'filing', 'audit', 'users'].forEach(id => {
                 const view = document.getElementById('view-' + id);
@@ -889,7 +680,157 @@
             }
         }
 
-        // BASKETBALL DROPZONE LOGIC (Sesuai Video 2)
+        // ================= 1. BACA DATA GOOGLE SHEETS REAL-TIME =================
+        async function loadDocumentsFromSheets() {
+            try {
+                const res = await fetch(GOOGLE_API_URL);
+                const result = await res.json();
+                if (result.success && result.data) {
+                    globalDocuments = result.data;
+                    renderDocumentList(result.data);
+                    renderAuditLogs(result.data);
+                    renderExpeditionList(result.data);
+                    updateMetrics(result.data);
+                }
+            } catch (err) {
+                console.warn("Gagal memuat Google Sheets:", err);
+            }
+        }
+
+        function renderDocumentList(data) {
+            const tbody = document.getElementById('docs-tbody');
+            const tasksContainer = document.getElementById('tasks-container');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-400">Belum ada dokumen terdaftar. Buat serah terima baru sekarang.</td></tr>`;
+                tasksContainer.innerHTML = `<p class="text-xs text-gray-400">Tidak ada dokumen yang menunggu verifikasi saat ini.</p>`;
+                return;
+            }
+
+            let taskItems = '';
+            let inProgressCount = 0;
+
+            tbody.innerHTML = data.map(d => {
+                const isUrgent = d.Urgensi === 'Urgent';
+                const badgeUrgensi = isUrgent 
+                    ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' 
+                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+                
+                const statusColor = d.Status === 'Completed' 
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : (d.Status === 'Perlu Revisi' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20');
+
+                if (d.Status === 'In Progress') {
+                    inProgressCount++;
+                    taskItems += `
+                        <div class="glass-panel p-5 rounded-3xl space-y-4 border-l-4 border-l-brand-orange">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded-md border border-brand-orange/20">Menunggu Tindakan Anda</span>
+                                    <h4 class="text-sm font-bold text-white mt-1.5">${d.NoDokumen} - ${d.Tipe}</h4>
+                                    <p class="text-xs text-gray-400">Pengirim: ${d.Pengirim} • Tujuan: ${d.Penerima}</p>
+                                </div>
+                                <span class="text-[10px] text-gray-500">${d.Waktu || '-'}</span>
+                            </div>
+                            <p class="text-xs text-gray-300 bg-black/20 p-3 rounded-2xl">"${d.Keterangan || '-'}"</p>
+                            ${d.FileUrl ? `<a href="${d.FileUrl}" target="_blank" class="inline-flex items-center gap-2 text-xs text-brand-orange underline"><i class="fa-solid fa-file-pdf"></i> Lihat Berkas di Google Drive</a>` : ''}
+                            <div class="flex gap-2 justify-end pt-2">
+                                <button onclick="promptRevision('${d.NoDokumen}')" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-amber-400 font-semibold text-xs border border-white/10 transition">
+                                    <i class="fa-solid fa-pencil"></i> Minta Revisi
+                                </button>
+                                <button onclick="openSignatureModal('${d.NoDokumen}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-signature"></i> Tanda Tangani & Selesaikan
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <tr class="hover:bg-white/[0.02] transition">
+                        <td class="py-3.5 px-2">
+                            <p class="font-bold text-white">${d.NoDokumen}</p>
+                            <p class="text-[10px] text-gray-400">${d.Tipe} • ${d.Kategori}</p>
+                        </td>
+                        <td class="py-3.5 px-2">
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeUrgensi}">
+                                ${d.Urgensi}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-2 text-gray-300">
+                            ${d.Pengirim} ➔ ${d.Penerima}
+                        </td>
+                        <td class="py-3.5 px-2">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${statusColor}">
+                                ${d.Status}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-2 text-right">
+                            ${d.FileUrl ? `<a href="${d.FileUrl}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-[11px] font-medium border border-white/10 mr-1"><i class="fa-solid fa-arrow-down"></i> Berkas</a>` : ''}
+                            <button onclick="switchTab('tasks')" class="px-2.5 py-1.5 rounded-xl bg-brand-orange text-white font-semibold text-[11px] shadow-sm hover:brightness-110 transition">
+                                Periksa
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('badge-tasks').innerText = inProgressCount;
+            if (inProgressCount > 0) {
+                document.getElementById('badge-tasks-mobile').classList.remove('hidden');
+                tasksContainer.innerHTML = taskItems;
+            } else {
+                document.getElementById('badge-tasks-mobile').classList.add('hidden');
+                tasksContainer.innerHTML = `<p class="text-xs text-gray-400">Tidak ada dokumen yang menunggu verifikasi saat ini.</p>`;
+            }
+        }
+
+        function renderAuditLogs(data) {
+            const auditBody = document.getElementById('audit-tbody');
+            if (data.length === 0) {
+                auditBody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-gray-400">Belum ada riwayat audit.</td></tr>`;
+                return;
+            }
+            auditBody.innerHTML = data.map(d => `
+                <tr>
+                    <td class="py-3 px-2 text-gray-400">${d.Waktu || '-'}</td>
+                    <td class="py-3 px-2 font-bold text-white">${d.NoDokumen}</td>
+                    <td class="py-3 px-2">${d.Pengirim}</td>
+                    <td class="py-3 px-2"><span class="text-emerald-400 font-bold">${d.Status}</span></td>
+                    <td class="py-3 px-2 text-gray-300">${d.Keterangan || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderExpeditionList(data) {
+            const expBody = document.getElementById('expedition-tbody');
+            if (data.length === 0) {
+                expBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-gray-400">Belum ada data ekspedisi.</td></tr>`;
+                return;
+            }
+            expBody.innerHTML = data.map(d => `
+                <tr>
+                    <td class="py-3 font-semibold text-white">${d.NoDokumen}</td>
+                    <td class="py-3">${d.Penerima}</td>
+                    <td class="py-3">${d.Kurir || 'Internal PHS'}</td>
+                    <td class="py-3"><span class="text-emerald-400 font-bold">${d.Status === 'Completed' ? '✓ Diterima' : 'Sedang Diantar'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateMetrics(data) {
+            let progress = 0, revision = 0, completed = 0;
+            data.forEach(d => {
+                if (d.Status === 'In Progress') progress++;
+                else if (d.Status === 'Perlu Revisi') revision++;
+                else if (d.Status === 'Completed') completed++;
+            });
+            document.getElementById('metric-progress').innerText = progress;
+            document.getElementById('metric-revision').innerText = revision;
+            document.getElementById('metric-completed').innerText = completed;
+            document.getElementById('metric-total').innerText = data.length;
+        }
+
+        // ================= 2. BASKETBALL UPLOAD ANIMATION (Video 2) =================
         function handleDragOver(e) {
             e.preventDefault();
             document.getElementById('drop-zone').classList.add('drag-shooting');
@@ -902,156 +843,80 @@
             e.preventDefault();
             document.getElementById('drop-zone').classList.remove('drag-shooting');
             if (e.dataTransfer.files.length > 0) {
-                processBasketballUpload(e.dataTransfer.files[0].name);
+                processFile(e.dataTransfer.files[0]);
             }
         }
         function handleFileChosen(e) {
             if (e.target.files.length > 0) {
-                processBasketballUpload(e.target.files[0].name);
+                processFile(e.target.files[0]);
             }
         }
-        function processBasketballUpload(fileName) {
-            const resultCard = document.getElementById('upload-result-card');
-            const resultName = document.getElementById('result-filename');
-            const badgeCount = document.getElementById('badge-upload-count');
-
-            resultName.innerText = fileName;
-            resultCard.classList.remove('hidden');
-            badgeCount.innerText = 'Uploaded: 1';
+        function processFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                currentUploadedFile = {
+                    fileName: file.name,
+                    mimeType: file.type || 'application/pdf',
+                    base64: evt.target.result
+                };
+                document.getElementById('result-filename').innerText = file.name;
+                document.getElementById('upload-result-card').classList.remove('hidden');
+                document.getElementById('badge-upload-count').innerText = 'Uploaded: 1';
+            };
+            reader.readAsDataURL(file);
         }
 
-        // GLASSY AUTH MODAL (Sesuai Video 3)
-        function openGlassyAuthModal() {
-            document.getElementById('modal-auth').classList.remove('hidden');
-        }
-        function closeGlassyAuthModal() {
-            document.getElementById('modal-auth').classList.add('hidden');
-        }
-        function toggleAuthMode(mode) {
-            const formIn = document.getElementById('form-signin');
-            const formUp = document.getElementById('form-signup');
-            const title = document.getElementById('auth-title');
-            const sub = document.getElementById('auth-subtitle');
-
-            if(mode === 'signup') {
-                formIn.classList.add('hidden');
-                formUp.classList.remove('hidden');
-                title.innerText = 'Create Account';
-                sub.innerText = 'Daftarkan data pegawai baru ke sistem';
-            } else {
-                formUp.classList.add('hidden');
-                formIn.classList.remove('hidden');
-                title.innerText = 'Welcome Back!';
-                sub.innerText = 'Masuk dengan identitas pegawai Anda';
-            }
-        }
-        function handleAuthSubmit(e, action) {
+        // ================= 3. SUBMIT DOKUMEN KE GOOGLE SHEETS & DRIVE =================
+        async function handleSubmitNewDocument(e) {
             e.preventDefault();
-            if(action === 'login') {
-                const user = document.getElementById('auth-login-user').value;
-                document.getElementById('profile-name').innerText = user;
-                alert('Berhasil masuk sebagai: ' + user);
-            } else {
-                alert('Akun berhasil didaftarkan! Silakan masuk.');
-                toggleAuthMode('signin');
-                return;
-            }
-            closeGlassyAuthModal();
-        }
+            const btn = document.getElementById('btn-submit-doc');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengunggah ke Drive & Sheets...</span>`;
+            btn.disabled = true;
 
-        // FORM SUBMIT DOKUMEN BARU
-        function handleSubmitNewDocument(e) {
-            e.preventDefault();
-            const docNum = document.getElementById('doc-number-input').value;
-            const urgency = document.getElementById('doc-urgency').value;
-            const recipient = document.getElementById('doc-recipient').value;
-            const desc = document.getElementById('doc-description').value;
+            const docData = {
+                noDokumen: document.getElementById('doc-number-input').value,
+                urgensi: document.getElementById('doc-urgency').value,
+                kategori: document.getElementById('doc-category').value,
+                tipe: document.getElementById('doc-category').value,
+                pengirim: document.getElementById('profile-name').innerText,
+                penerima: document.getElementById('doc-recipient').value,
+                lemariArsip: document.getElementById('doc-rack').value,
+                kurir: document.getElementById('doc-courier').value,
+                keterangan: document.getElementById('doc-description').value
+            };
 
-            const tbody = document.getElementById('docs-tbody');
-            const badgeClass = urgency === 'Urgent' 
-                ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' 
-                : 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+            const payload = {
+                action: "createDocument",
+                doc: docData,
+                fileData: currentUploadedFile
+            };
 
-            const newRow = `
-                <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-3.5 px-2">
-                        <p class="font-bold text-white">${docNum}</p>
-                        <p class="text-[10px] text-gray-400">${desc}</p>
-                    </td>
-                    <td class="py-3.5 px-2">
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeClass}">
-                            ${urgency}
-                        </span>
-                    </td>
-                    <td class="py-3.5 px-2 text-gray-300">
-                        Hari Santoso ➔ ${recipient}
-                    </td>
-                    <td class="py-3.5 px-2">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                            In Progress
-                        </span>
-                    </td>
-                    <td class="py-3.5 px-2 text-right">
-                        <button onclick="alert('Rincian dokumen ${docNum}')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-medium text-[11px] border border-white/10 transition">
-                            Detail
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tbody.insertAdjacentHTML('afterbegin', newRow);
-
-            const auditBody = document.getElementById('audit-tbody');
-            const now = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const auditRow = `
-                <tr>
-                    <td class="py-3 px-2 text-gray-400">${now} WIB</td>
-                    <td class="py-3 px-2 font-bold text-white">${docNum}</td>
-                    <td class="py-3 px-2">Hari Santoso</td>
-                    <td class="py-3 px-2"><span class="text-blue-400 font-bold">Penyerahan Dikirim</span></td>
-                    <td class="py-3 px-2 text-gray-400">${desc}</td>
-                </tr>
-            `;
-            auditBody.insertAdjacentHTML('afterbegin', auditRow);
-
-            alert(`Dokumen ${docNum} berhasil didaftarkan dan dikirim ke ${recipient}.`);
-            switchTab('dashboard');
-        }
-
-        function filterDocTable() {
-            const val = document.getElementById('search-doc').value.toLowerCase();
-            const rows = document.querySelectorAll('#docs-tbody tr');
-            rows.forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none';
-            });
-        }
-
-        function promptRevision(docNum) {
-            const note = prompt(`Tuliskan kata-kata / catatan koreksi untuk dokumen ${docNum} sebelum dikembalikan ke pihak pengirim:`);
-            if (note) {
-                alert(`Catatan revisi tersimpan: "${note}". Berkas otomatis dikembalikan ke pengirim untuk diperbaiki.`);
-                document.getElementById('metric-revision').innerText = '2';
-                
-                const auditBody = document.getElementById('audit-tbody');
-                const now = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const auditRow = `
-                    <tr>
-                        <td class="py-3 px-2 text-gray-400">${now} WIB</td>
-                        <td class="py-3 px-2 font-bold text-white">${docNum}</td>
-                        <td class="py-3 px-2">Penerima Berkas</td>
-                        <td class="py-3 px-2"><span class="text-amber-400 font-bold">Minta Koreksi/Revisi</span></td>
-                        <td class="py-3 px-2 text-amber-300 font-semibold">"${note}"</td>
-                    </tr>
-                `;
-                auditBody.insertAdjacentHTML('afterbegin', auditRow);
-                switchTab('dashboard');
+            try {
+                const res = await fetch(GOOGLE_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert("Berhasil! Berkas tersimpan di Google Sheets & Google Drive.");
+                    e.target.reset();
+                    currentUploadedFile = null;
+                    document.getElementById('upload-result-card').classList.add('hidden');
+                    document.getElementById('badge-upload-count').innerText = 'Uploaded: 0';
+                    loadDocumentsFromSheets();
+                    switchTab('dashboard');
+                } else {
+                    alert("Gagal: " + result.error);
+                }
+            } catch (err) {
+                alert("Koneksi gagal: " + err.toString());
+            } finally {
+                btn.innerHTML = `<span>Simpan & Kirim Serah Terima</span>`;
+                btn.disabled = false;
             }
         }
 
-        function viewRevisionNote(docNum, note) {
-            alert(`Catatan Perbaikan Dokumen ${docNum}:\n\n"${note}"\n\nSilakan perbaiki berkas sesuai instruksi di atas.`);
-        }
-
-        // KANVAS TANDA TANGAN
+        // ================= 4. TANDA TANGAN CANVAS & DISAHKAN KE DRIVE =================
         let canvas, ctx, isDrawing = false;
         function initSignatureCanvas() {
             canvas = document.getElementById('signature-canvas');
@@ -1064,38 +929,22 @@
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
+                return { x: clientX - rect.left, y: clientY - rect.top };
             }
-
-            function startDraw(e) {
-                isDrawing = true;
-                const pos = getPos(e);
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
-            function draw(e) {
-                if (!isDrawing) return;
-                const pos = getPos(e);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-            }
-            function stopDraw() {
-                isDrawing = false;
-            }
+            function startDraw(e) { isDrawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+            function draw(e) { if (!isDrawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+            function stopDraw() { isDrawing = false; }
 
             canvas.addEventListener('mousedown', startDraw);
             canvas.addEventListener('mousemove', draw);
             window.addEventListener('mouseup', stopDraw);
-
             canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, { passive: false });
             canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
             canvas.addEventListener('touchend', stopDraw);
         }
 
         function openSignatureModal(docNum) {
+            selectedDocForSign = docNum;
             document.getElementById('modal-signature').classList.remove('hidden');
             initSignatureCanvas();
             clearSignatureCanvas();
@@ -1104,38 +953,98 @@
             document.getElementById('modal-signature').classList.add('hidden');
         }
         function clearSignatureCanvas() {
-            if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        async function saveSignatureAndComplete() {
+            const btn = document.getElementById('btn-save-signature');
+            btn.innerText = "Menyimpan ke Drive...";
+            btn.disabled = true;
+
+            const sigBase64 = canvas.toDataURL('image/png');
+            const payload = {
+                action: "signDocument",
+                noDokumen: selectedDocForSign,
+                signer: document.getElementById('profile-name').innerText,
+                signatureBase64: sigBase64
+            };
+
+            try {
+                const res = await fetch(GOOGLE_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert("Dokumen berhasil disahkan dan tanda tangan disimpan di Drive!");
+                    closeSignatureModal();
+                    loadDocumentsFromSheets();
+                    switchTab('dashboard');
+                }
+            } catch (err) {
+                alert("Gagal menyimpan tanda tangan: " + err.toString());
+            } finally {
+                btn.innerText = "Konfirmasi & Sahkan";
+                btn.disabled = false;
             }
         }
-        function saveSignatureAndComplete() {
-            alert('Tanda tangan digital berhasil diverifikasi dan tersimpan ke jejak audit! Dokumen resmi SELESAI.');
-            closeSignatureModal();
-            document.getElementById('badge-tasks').innerText = '0';
-            document.getElementById('metric-completed').innerText = '4';
-            document.getElementById('metric-progress').innerText = '0';
 
-            const auditBody = document.getElementById('audit-tbody');
-            const now = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const auditRow = `
-                <tr>
-                    <td class="py-3 px-2 text-gray-400">${now} WIB</td>
-                    <td class="py-3 px-2 font-bold text-white">PHS/FIN/2026/089</td>
-                    <td class="py-3 px-2">Budi Pratama (Finance)</td>
-                    <td class="py-3 px-2"><span class="text-emerald-400 font-bold">Sah & Ditandatangani</span></td>
-                    <td class="py-3 px-2 text-gray-400">Verifikasi tanda tangan digital sah</td>
-                </tr>
-            `;
-            auditBody.insertAdjacentHTML('afterbegin', auditRow);
-            switchTab('dashboard');
+        // ================= 5. REVISI & DISPOSISI =================
+        async function promptRevision(docNum) {
+            const note = prompt(`Masukkan instruksi/catatan koreksi untuk dokumen ${docNum}:`);
+            if (note) {
+                const payload = {
+                    action: "revisionDocument",
+                    noDokumen: docNum,
+                    reviewer: document.getElementById('profile-name').innerText,
+                    note: note
+                };
+                try {
+                    await fetch(GOOGLE_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                    alert("Catatan revisi tersimpan ke Google Sheets.");
+                    loadDocumentsFromSheets();
+                } catch (e) {
+                    alert("Gagal mencatat revisi: " + e.toString());
+                }
+            }
         }
 
-        function handleNewUser(e) {
+        // ================= 6. GLASSY AUTH MODAL (Video 3) =================
+        function openGlassyAuthModal() { document.getElementById('modal-auth').classList.remove('hidden'); }
+        function closeGlassyAuthModal() { document.getElementById('modal-auth').classList.add('hidden'); }
+        async function handleLoginSubmit(e) {
             e.preventDefault();
-            const name = document.getElementById('user-name').value;
-            alert(`Staf ${name} berhasil didaftarkan ke sistem.`);
-            e.target.reset();
+            const nik = document.getElementById('auth-nik').value;
+            const pass = document.getElementById('auth-pass').value;
+            try {
+                const res = await fetch(GOOGLE_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "login", nik: nik, password: pass })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    document.getElementById('profile-name').innerText = result.user.nama;
+                    alert("Selamat datang, " + result.user.nama);
+                    closeGlassyAuthModal();
+                } else {
+                    alert(result.message || "Gagal login!");
+                }
+            } catch (err) {
+                alert("Koneksi gagal: " + err.toString());
+            }
         }
+
+        function filterDocTable() {
+            const val = document.getElementById('search-doc').value.toLowerCase();
+            const rows = document.querySelectorAll('#docs-tbody tr');
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
+        }
+
+        // Muat data saat halaman dibuka
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDocumentsFromSheets();
+        });
     </script>
 </body>
 </html>
