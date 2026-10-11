@@ -81,6 +81,18 @@
         .drag-shooting .basket-ball { transform: translateY(32px) scale(0.85); opacity: 1; }
         .drag-shooting .basket-hoop { transform: scale(1.1); }
 
+        /* KOTAK STEMPEL E-TTD GESER MANUAL (DRAGGABLE STAMP) */
+        #drag-stamp-box {
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+            transition: border-color 0.2s;
+        }
+        #drag-stamp-box:active {
+            border-color: #ff6b4a !important;
+            box-shadow: 0 0 20px rgba(255, 107, 74, 0.6);
+        }
+
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
@@ -155,7 +167,6 @@
             </div>
         </div>
 
-        <!-- Profil Pengguna Aktif & Login Modal -->
         <div class="pt-3 border-t border-white/5">
             <div class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/5">
                 <div class="flex items-center gap-2.5 overflow-hidden">
@@ -197,10 +208,10 @@
                             Anti-Berkas Hilang
                         </span>
                         <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                            Alur Berjenjang Aktif
+                            Sinkron Google Sheets & Drive
                         </span>
                     </div>
-                    <h2 class="text-xl md:text-2xl font-bold text-white mt-2">Kontrol Penyerahan Berkas Rumah Sakit</h2>
+                    <h2 class="text-xl md:text-2xl font-bold text-white mt-2">Kontrol Penyerahan Berkas Penting</h2>
                     <p class="text-xs text-gray-400 mt-1 max-w-lg">PT Permata Husada Sakti & RS Grha Permata Ibu: tanda tangan berjenjang multi-tahap, disposisi pimpinan, dan coretan digital revisi.</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
@@ -217,7 +228,7 @@
 
             <!-- 4 KARTU FILTER STATUS DASHBOARD -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                <div onclick="filterDashboardByStatus('In Progress')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-blue-400 transition" title="Klik untuk filter In Progress">
+                <div onclick="filterDashboardByStatus('In Progress')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-blue-400 transition">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Sedang Proses</p>
                         <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-progress">0</p>
@@ -227,7 +238,7 @@
                     </div>
                 </div>
 
-                <div onclick="filterDashboardByStatus('Perlu Revisi')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-amber-400 transition" title="Klik untuk filter Perlu Revisi">
+                <div onclick="filterDashboardByStatus('Perlu Revisi')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-amber-400 transition">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Perlu Revisi</p>
                         <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-revision">0</p>
@@ -237,7 +248,7 @@
                     </div>
                 </div>
 
-                <div onclick="filterDashboardByStatus('Completed')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-emerald-400 transition" title="Klik untuk filter Selesai">
+                <div onclick="filterDashboardByStatus('Completed')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-emerald-400 transition">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Selesai & Sah</p>
                         <p class="text-xl md:text-2xl font-bold text-white mt-0.5" id="metric-completed">0</p>
@@ -247,7 +258,7 @@
                     </div>
                 </div>
 
-                <div onclick="filterDashboardByStatus('ALL')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-brand-orange transition" title="Klik untuk melihat Semua">
+                <div onclick="filterDashboardByStatus('ALL')" class="glass-card p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-brand-orange transition">
                     <div>
                         <p class="text-[11px] font-medium text-gray-400">Total Terdaftar</p>
                         <p class="text-xl md:text-2xl font-bold text-brand-orange mt-0.5" id="metric-total">0</p>
@@ -407,11 +418,11 @@
             </form>
         </section>
 
-        <!-- 3. TUGAS, VERIFIKASI & RIWAYAT BERJENJANG (ACCORDION EXPAND/COLLAPSE) -->
+        <!-- 3. TUGAS, VERIFIKASI & RIWAYAT BERJENJANG -->
         <section id="view-tasks" class="hidden max-w-3xl mx-auto space-y-4">
             <div>
                 <h2 class="text-xl font-bold text-white">Tugas Pemeriksaan, E-TTD & Coretan Revisi</h2>
-                <p class="text-xs text-gray-400">Buka dokumen terlebih dahulu untuk dibaca, lalu lakukan disposisi, coretan revisi digital, atau penempatan E-TTD.</p>
+                <p class="text-xs text-gray-400">Buka dokumen terlebih dahulu untuk dibaca, lalu lakukan disposisi, coretan revisi digital, atau penempatan E-TTD geser manual.</p>
             </div>
             <div id="tasks-container" class="space-y-4">
                 <p class="text-xs text-gray-400">Tidak ada dokumen yang menunggu tindakan saat ini.</p>
@@ -596,7 +607,7 @@
         </button>
     </nav>
 
-    <!-- ================= MODAL PRATINJAU DOKUMEN & KONTROL (PREVIEW FIRST) ================= -->
+    <!-- ================= MODAL PRATINJAU DOKUMEN & KONTROL (PREVIEW FIRST + DRAG STAMP) ================= -->
     <div id="modal-doc-previewer" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-3 md:p-6">
         <div class="glass-panel w-full max-w-5xl h-[92vh] rounded-3xl flex flex-col overflow-hidden border border-white/20">
             <!-- Header Reader -->
@@ -619,16 +630,29 @@
                 </div>
             </div>
 
-            <!-- Area Frame Dokumen & Kanvas Coretan Digital -->
-            <div class="flex-1 bg-slate-950 p-2 overflow-hidden relative">
+            <!-- Area Frame Dokumen & Overlay Stempel Geser / Coretan -->
+            <div id="preview-viewport-area" class="flex-1 bg-slate-950 p-2 overflow-hidden relative">
                 <iframe id="reader-iframe" src="" class="w-full h-full rounded-2xl border border-white/10" frameborder="0"></iframe>
                 
+                <!-- KOTAK STEMPEL E-TTD GESER MANUAL (DRAGGABLE E-TTD STAMP) -->
+                <div id="drag-stamp-box" class="hidden absolute z-40 w-48 p-2 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-950/70 backdrop-blur-sm text-center shadow-2xl">
+                    <div class="flex justify-between items-center text-[10px] font-bold text-emerald-300 border-b border-emerald-500/30 pb-1 mb-1">
+                        <span><i class="fa-solid fa-arrows-up-down-left-right"></i> GESER STEMPEL TTD</span>
+                        <span id="stamp-coord-label">X: 50% Y: 70%</span>
+                    </div>
+                    <div id="stamp-preview-img-box" class="h-14 flex items-center justify-center bg-white/10 rounded-lg">
+                        <span class="text-[9px] text-gray-300">Goreskan TTD di Bawah</span>
+                    </div>
+                    <p class="text-[9px] text-emerald-200 mt-1 font-semibold" id="stamp-signer-label">Hari Santoso, S. Sos</p>
+                </div>
+
+                <!-- Kanvas Coretan Digital Overlay -->
                 <canvas id="annotation-canvas" class="hidden absolute inset-0 z-30 cursor-crosshair touch-none"></canvas>
 
                 <div id="annotation-palette" class="hidden absolute top-4 left-4 z-40 glass-panel p-3 rounded-2xl flex items-center gap-3 border border-white/20 shadow-2xl">
                     <span class="text-[11px] font-bold text-rose-400"><i class="fa-solid fa-pen-nib"></i> Pena Merah Revisi</span>
                     <button onclick="clearAnnotationCanvas()" class="px-2 py-1 rounded-lg bg-white/10 text-xs text-gray-300 hover:bg-white/20">Hapus Coretan</button>
-                    <button onclick="submitAnnotationRevision()" class="px-3 py-1 rounded-lg bg-rose-600 text-white font-bold text-xs hover:bg-rose-500 shadow">Kirim Catatan & Coretan Revisi</button>
+                    <button onclick="submitAnnotationRevision()" class="px-3 py-1 rounded-lg bg-rose-600 text-white font-bold text-xs hover:bg-rose-500 shadow">Kirim Catatan & Coretan</button>
                 </div>
             </div>
         </div>
@@ -651,18 +675,20 @@
                 <div class="bg-white rounded-2xl p-1">
                     <canvas id="signature-canvas" width="340" height="140" class="w-full bg-slate-50 rounded-xl cursor-crosshair touch-none"></canvas>
                 </div>
-                <button onclick="clearSignatureCanvas()" class="text-[10px] text-gray-400 hover:text-white underline mt-1">Hapus Goresan</button>
+                <div class="flex justify-between items-center mt-1">
+                    <button onclick="clearSignatureCanvas()" class="text-[10px] text-gray-400 hover:text-white underline">Hapus Goresan</button>
+                    <button onclick="applySignatureToStampPreview()" class="text-[10px] text-emerald-400 font-bold hover:underline">Pasang ke Stempel Geser ➔</button>
+                </div>
             </div>
 
-            <!-- Penempatan Posisi E-TTD -->
+            <!-- Penempatan Halaman Dokumen -->
             <div>
-                <label class="block text-xs font-semibold text-gray-300 mb-1">Posisikan Letak E-TTD pada Dokumen:</label>
-                <select id="sign-position" class="w-full p-2.5 rounded-xl glass-input text-xs bg-slate-900">
-                    <option value="Halaman 1 - Kolom Pihak Pertama (Kiri Bawah)">Halaman 1 - Kolom Pihak Pertama (Kiri Bawah)</option>
-                    <option value="Halaman 1 - Kolom Pihak Kedua (Kanan Bawah)">Halaman 1 - Kolom Pihak Kedua (Kanan Bawah)</option>
-                    <option value="Halaman 2 - Kolom Saksi / Arsiparis">Halaman 2 - Kolom Saksi / Arsiparis</option>
-                    <option value="Halaman Terakhir - Kolom Mengetahui / Direktur (Tengah)">Halaman Terakhir - Kolom Mengetahui / Direktur (Tengah)</option>
-                    <option value="Lembar Pengesahan Lampiran">Lembar Pengesahan Lampiran</option>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Pilih Halaman Target Penempatan:</label>
+                <select id="sign-target-page" class="w-full p-2.5 rounded-xl glass-input text-xs bg-slate-900">
+                    <option value="Halaman 1 (Utama)">Halaman 1 (Utama)</option>
+                    <option value="Halaman 2">Halaman 2</option>
+                    <option value="Halaman 3">Halaman 3</option>
+                    <option value="Halaman Terakhir / Lampiran">Halaman Terakhir / Lampiran</option>
                 </select>
             </div>
 
@@ -763,6 +789,7 @@
         let masterUsers = [];
         let currentStatusFilter = "ALL";
         let isAnnotationMode = false;
+        let stampPos = { x: 50, y: 70 }; // default persen posisi X, Y
 
         function formatWaktuLokal(isoString) {
             if (!isoString) return "-";
@@ -893,7 +920,7 @@
             }).join('');
         }
 
-        // ================= 3. TUGAS & RIWAYAT BERJENJANG (ACCORDION) =================
+        // ================= 3. TUGAS & RIWAYAT BERJENJANG =================
         function renderTasksAndHistory(data) {
             const container = document.getElementById('tasks-container');
             const inProgressDocs = data.filter(d => d.Status === 'In Progress' || d.Status === 'Perlu Revisi');
@@ -922,7 +949,7 @@
                             <span class="font-bold text-white">Langkah #${h.step}: ${h.action}</span>
                             <span class="text-[10px] text-gray-400 font-mono">${h.time}</span>
                         </div>
-                        <p class="text-[11px] text-gray-300">Oleh: <b>${h.actor}</b> (${h.role || '-'}) • Posisi: ${h.position || '-'}</p>
+                        <p class="text-[11px] text-gray-300">Oleh: <b>${h.actor}</b> (${h.role || '-'}) • Posisi Letak: <b>${h.position || '-'}</b></p>
                         ${h.notes && h.notes !== '-' ? `<p class="text-[11px] text-amber-300 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">Catatan: "${h.notes}"</p>` : ''}
                         ${h.sigUrl ? `<a href="${h.sigUrl}" target="_blank" class="inline-block text-[10px] text-emerald-400 underline font-semibold mt-1"><i class="fa-solid fa-signature"></i> Lihat E-TTD</a>` : ''}
                         ${h.annotationUrl ? `<a href="${h.annotationUrl}" target="_blank" class="inline-block text-[10px] text-rose-400 underline font-semibold mt-1 ml-2"><i class="fa-solid fa-pen-nib"></i> Lihat Coretan Revisi</a>` : ''}
@@ -972,12 +999,13 @@
             document.getElementById(id).classList.toggle('hidden');
         }
 
-        // ================= 4. PRATINJAU DOKUMEN, CORETAN REVISI & E-TTD =================
+        // ================= 4. PRATINJAU DOKUMEN (PREVIEW FIRST) & DRAGGABLE STAMP =================
         function openDocPreviewer(docNum, rawUrl) {
             selectedDocForAction = docNum;
             const modal = document.getElementById('modal-doc-previewer');
             const iframe = document.getElementById('reader-iframe');
             document.getElementById('reader-doc-title').innerText = `Pemeriksaan Berkas: ${docNum}`;
+            document.getElementById('stamp-signer-label').innerText = document.getElementById('profile-name').innerText;
 
             let previewUrl = rawUrl;
             if (rawUrl && rawUrl.includes('drive.google.com')) {
@@ -990,12 +1018,80 @@
             isAnnotationMode = false;
             document.getElementById('annotation-canvas').classList.add('hidden');
             document.getElementById('annotation-palette').classList.add('hidden');
+            document.getElementById('drag-stamp-box').classList.add('hidden');
             modal.classList.remove('hidden');
+
+            initDraggableStamp();
         }
 
         function closeDocPreviewer() {
             document.getElementById('modal-doc-previewer').classList.add('hidden');
             document.getElementById('reader-iframe').src = "";
+            document.getElementById('drag-stamp-box').classList.add('hidden');
+        }
+
+        // INISIALISASI FITUR GESER MANUAL STEMPEL E-TTD (DRAG & DROP)
+        function initDraggableStamp() {
+            const stamp = document.getElementById('drag-stamp-box');
+            const area = document.getElementById('preview-viewport-area');
+            let isDragging = false, startX, startY, initialLeft, initialTop;
+
+            function onPointerDown(e) {
+                isDragging = true;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startX = clientX;
+                startY = clientY;
+                initialLeft = stamp.offsetLeft;
+                initialTop = stamp.offsetTop;
+            }
+
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                let newX = initialLeft + (clientX - startX);
+                let newY = initialTop + (clientY - startY);
+
+                // Batasi agar tetap di dalam kotak pratinjau dokumen
+                newX = Math.max(10, Math.min(newX, area.clientWidth - stamp.offsetWidth - 10));
+                newY = Math.max(10, Math.min(newY, area.clientHeight - stamp.offsetHeight - 10));
+
+                stamp.style.left = newX + 'px';
+                stamp.style.top = newY + 'px';
+
+                // Hitung posisi persentase
+                const pctX = Math.round((newX / area.clientWidth) * 100);
+                const pctY = Math.round((newY / area.clientHeight) * 100);
+                stampPos = { x: pctX, y: pctY };
+                document.getElementById('stamp-coord-label').innerText = `X: ${pctX}% Y: ${pctY}%`;
+            }
+
+            function onPointerUp() {
+                isDragging = false;
+            }
+
+            stamp.onmousedown = onPointerDown;
+            window.onmousemove = onPointerMove;
+            window.onmouseup = onPointerUp;
+
+            stamp.ontouchstart = onPointerDown;
+            window.ontouchmove = onPointerMove;
+            window.ontouchend = onPointerUp;
+        }
+
+        function applySignatureToStampPreview() {
+            const sigData = sigCanvas.toDataURL('image/png');
+            const box = document.getElementById('stamp-preview-img-box');
+            box.innerHTML = `<img src="${sigData}" class="h-full object-contain mx-auto filter drop-shadow">`;
+            
+            // Tampilkan kotak stempel geser di atas dokumen
+            const stamp = document.getElementById('drag-stamp-box');
+            stamp.classList.remove('hidden');
+            stamp.style.left = '50%';
+            stamp.style.top = '65%';
+            closeSignatureModal();
+            alert("Kotak stempel E-TTD telah muncul di atas dokumen. Silakan geser manual dengan jari/mouse ke posisi yang pas, lalu klik 'Konfirmasi & Proses'!");
         }
 
         // Mode Coretan Digital
@@ -1065,7 +1161,7 @@
             } catch(e) { alert("Gagal mengirim revisi: " + e.toString()); }
         }
 
-        // ================= 5. E-TTD BERJENJANG (3, 5, ATAU LEBIH TAHAP) =================
+        // ================= 5. E-TTD BERJENJANG DENGAN KOORDINAT GESER =================
         let sigCanvas, sigCtx, isSigDrawing = false;
         function openSignatureTierFlow() {
             document.getElementById('sign-modal-doc-id').innerText = `Nomor Berkas: ${selectedDocForAction}`;
@@ -1107,8 +1203,11 @@
 
             const isFinal = document.querySelector('input[name="flow-action"]:checked').value === 'final';
             const nextRecipient = document.getElementById('forward-next-user').value;
-            const position = document.getElementById('sign-position').value;
+            const targetPage = document.getElementById('sign-target-page').value;
             const sigBase64 = sigCanvas.toDataURL('image/png');
+
+            // Posisi presisi koordinat hasil geser manual
+            const finalPositionLabel = `${targetPage} (Posisi Geser: Horisontal ${stampPos.x}%, Vertikal ${stampPos.y}%)`;
 
             const payload = {
                 action: "signMultiTier",
@@ -1116,7 +1215,7 @@
                 signer: document.getElementById('profile-name').innerText,
                 role: document.getElementById('profile-role').innerText,
                 signatureBase64: sigBase64,
-                position: position,
+                position: finalPositionLabel,
                 isFinal: isFinal,
                 nextRecipient: nextRecipient,
                 notes: isFinal ? "Telah diperiksa lengkap & disahkan" : `Diteruskan ke ${nextRecipient}`
@@ -1275,7 +1374,7 @@
         }
         function closeCabinetDocsModal() { document.getElementById('modal-cabinet-docs').classList.add('hidden'); }
 
-        // ================= 8. SUBMIT DOKUMEN BARU =================
+        // ================= 8. SUBMIT DOKUMEN BARU (DENGAN INDIKATOR STATUS CEPAT) =================
         function handleDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-shooting'); }
         function handleDragLeave(e) { e.preventDefault(); document.getElementById('drop-zone').classList.remove('drag-shooting'); }
         function handleDrop(e) {
@@ -1304,7 +1403,7 @@
         async function handleSubmitNewDocument(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit-doc');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengunggah ke Drive & Sheets...</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengunggah berkas ke Google Drive...</span>`;
             btn.disabled = true;
 
             const docData = {
