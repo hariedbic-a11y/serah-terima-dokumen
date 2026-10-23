@@ -179,8 +179,8 @@
                         <p class="text-[10px] text-gray-400 truncate" id="profile-role">Admin Utama</p>
                     </div>
                 </div>
-                <button onclick="openAuthModal()" title="Ganti User / Login" class="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition">
-                    <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                <button onclick="logoutUser()" title="Keluar / Logout" class="p-2 rounded-xl hover:bg-white/10 text-rose-400 hover:text-rose-300 transition">
+                    <i class="fa-solid fa-power-off text-xs"></i>
                 </button>
             </div>
         </div>
@@ -191,8 +191,8 @@
     <div class="h-11 w-60 bg-white px-1.5 py-0.5 rounded-xl flex items-center justify-center shadow overflow-hidden">
         <img src="logo.png" alt="Logo PHS RPI" class="w-full h-full object-contain">
     </div>
-        <button onclick="openAuthModal()" class="w-8 h-8 rounded-full bg-brand-orange/20 border border-brand-orange/40 flex items-center justify-center text-xs font-bold text-brand-orange">
-            <i class="fa-solid fa-user"></i>
+        <<button onclick="logoutUser()" title="Keluar / Logout" class="w-8 h-8 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-xs font-bold text-rose-400">
+            <i class="fa-solid fa-power-off"></i>
         </button>
     </header>
 
@@ -761,17 +761,14 @@
     </div>
 
     <!-- MODAL LOGIN PEGAWAI -->
-    <div id="modal-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div id="modal-auth" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
         <div class="glass-panel p-8 rounded-3xl max-w-md w-full border border-white/15 shadow-2xl">
-         <div class="w-full h-16 bg-white p-1 rounded-2xl flex items-center justify-center shadow-md mb-4 overflow-hidden">
-    <img src="logo.png" alt="Logo PHS RPI" class="h-full w-auto object-contain">
-</div>
-            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-                <div>
-                    <h3 class="text-base font-bold text-white">Login Otoritas Petugas</h3>
-                    <p class="text-[11px] text-gray-400">Masuk dengan identitas akun terdaftar</p>
-                </div>
-                <button onclick="closeAuthModal()" class="text-gray-400 hover:text-white text-sm">✕</button>
+            <div class="w-full h-16 bg-white p-1 rounded-2xl flex items-center justify-center shadow-md mb-4 overflow-hidden">
+                <img src="logo.png" alt="Logo PHS RPI" class="h-full w-auto object-contain">
+            </div>
+            <div class="mb-6 border-b border-white/10 pb-4 text-center">
+                <h3 class="text-base font-bold text-white">Login Otoritas Petugas</h3>
+                <p class="text-[11px] text-gray-400">Masuk dengan identitas akun terdaftar</p>
             </div>
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
@@ -782,7 +779,7 @@
                     <label class="block text-[11px] font-semibold text-gray-300 mb-1">Password</label>
                     <input type="password" id="auth-pass" required placeholder="••••••••" class="w-full p-3 rounded-2xl glass-input text-xs">
                 </div>
-                <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 transition">
+                <button type="submit" id="btn-login-submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-orange to-amber-500 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 hover:brightness-110 transition">
                     Masuk ke Sistem
                 </button>
             </form>
@@ -1583,8 +1580,12 @@
 
         async function handleLoginSubmit(e) {
             e.preventDefault();
-            const nik = document.getElementById('auth-nik').value;
-            const pass = document.getElementById('auth-pass').value;
+            const nik = document.getElementById('auth-nik').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            const btn = document.getElementById('btn-login-submit');
+
+            btn.innerText = "Memverifikasi...";
+            btn.disabled = true;
 
             try {
                 const res = await fetch(GOOGLE_API_URL, {
@@ -1593,19 +1594,46 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    document.getElementById('profile-name').innerText = result.user.nama;
-                    document.getElementById('profile-role').innerText = result.user.role;
-                    checkAdminPrivilege();
+                    // Simpan sesi login di browser
+                    localStorage.setItem('phs_logged_user', JSON.stringify(result.user));
+                    terapkanProfilUser(result.user);
+                    document.getElementById('modal-auth').classList.add('hidden');
                     alert(`Selamat datang, ${result.user.nama} (${result.user.role})`);
-                    closeAuthModal();
+                    loadDocumentsFromSheets(true);
                 } else {
-                    alert(result.message || "Gagal login!");
+                    alert(result.message || "NIK atau Password salah!");
                 }
-            } catch(e) { alert("Koneksi gagal: " + e.toString()); }
+            } catch(e) { 
+                alert("Koneksi gagal: " + e.toString()); 
+            } finally {
+                btn.innerText = "Masuk ke Sistem";
+                btn.disabled = false;
+            }
+        }
+
+        function terapkanProfilUser(user) {
+            document.getElementById('profile-name').innerText = user.nama;
+            document.getElementById('profile-role').innerText = user.role;
+            checkAdminPrivilege();
+        }
+
+        function logoutUser() {
+            if (confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+                localStorage.removeItem('phs_logged_user');
+                location.reload();
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadDocumentsFromSheets();
+            const savedUser = localStorage.getItem('phs_logged_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                terapkanProfilUser(user);
+                document.getElementById('modal-auth').classList.add('hidden');
+                loadDocumentsFromSheets();
+            } else {
+                document.getElementById('modal-auth').classList.remove('hidden');
+            }
         });
     </script>
 </body>
